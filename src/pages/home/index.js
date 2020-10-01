@@ -51,7 +51,7 @@ class ClusterBroker extends React.Component {
             <img src={Logo} alt="logo" width="84px" height="84px" />
           </div>
           <div style={{ float: 'left', fontSize: 42, marginTop: 16, color: 'white' }}>
-            SEKG 科学教育图谱
+            cmct 科学教育图谱
           </div>
         </div>
         <br />
@@ -63,15 +63,15 @@ class ClusterBroker extends React.Component {
               width: 500, float: 'left',
             }}
             dataSource={[]}
-            onChange={value => this.handleInputChange(value)}
-            onSelect={value => this.setState({ filter: value })}
+            onChange={(value) => this.handleInputChange(value)}
+            onSelect={(value) => this.setState({ filter: value })}
             backfill
             placeholder="请输入要搜索的内容"
             optionLabelProp="value"
             defaultActiveFirstOption={false}
           >
             <Input
-              onPressEnter={e => this.handleJump(e.target.value)}
+              onPressEnter={(e) => this.handleJump(e.target.value)}
               style={{ borderBottomRightRadius: 0, borderTopRightRadius: 0 }}
             />
           </AutoComplete>

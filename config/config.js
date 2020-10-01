@@ -6,7 +6,6 @@ function dir(d) {
   return path.resolve(__dirname, d)
 }
 
-
 function defineProperty() {
   const dev = {
     test: 'test',
@@ -24,15 +23,15 @@ export default {
       antd: true,
       dva: true,
       dynamicImport: true,
-      title: 'SEKG',
+      title: 'cmct',
       dll: false,
       hardSource: false,
     }],
   ],
-  outputPath: './public/sekg/',
-  publicPath: '/sekg/',
+  outputPath: './public/cmct/',
+  publicPath: '/cmct/',
   proxy: {
-    '/sekg/api/': { target: 'http://127.0.0.1:8567/', changeOrigin: true },
+    '/cmct/api/': { target: 'http://127.0.0.1:8567/', changeOrigin: true },
   },
   define: defineProperty(),
   routes: pageRoutes,

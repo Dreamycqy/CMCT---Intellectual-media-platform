@@ -378,7 +378,7 @@ class FirstGraph extends React.Component {
 
   handleJump = (filter) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/sekg/searchPage',
+      pathname: '/cmct/searchPage',
       query: {
         filter,
       },
@@ -466,7 +466,7 @@ class FirstGraph extends React.Component {
             size="small"
             pagination={false}
             itemLayout="vertical"
-            expandedRowRender={record => (
+            expandedRowRender={(record) => (
               <div style={{ margin: 0 }}>
                 {this.renderExpand(record.propety)}
               </div>
@@ -509,7 +509,7 @@ class FirstGraph extends React.Component {
                   <div>
                     {item.propety.filter((e) => {
                       return (e.predicate_label !== '资源标题' && e.predicate_label !== '资源类别' && e.predicate_label !== '资源链接' && e.predicate_label !== '资源图片')
-                    }).map(e => (
+                    }).map((e) => (
                       <div>
                         <div style={{ width: 100, textAlign: 'right', display: 'inline-block' }}>
                           {obj === '科学百科词条' ? e.predicate_label.split('百科infobox_')[1] : e.predicate_label}
@@ -543,8 +543,7 @@ class FirstGraph extends React.Component {
               ? <img src={e.object} alt="" height="200px" />
               : this.checkUrl(e.object)
                 ? <a href="javascript:;" onClick={() => window.open(e.object)}>{e.object}</a>
-                : <span>{e.object}</span>
-            }
+                : <span>{e.object}</span>}
           </div>
         </div>,
       )
@@ -571,18 +570,16 @@ class FirstGraph extends React.Component {
         <div style={{ float: 'left', width: 250 }}>
           <div style={{ height: 60, marginLeft: 30, marginTop: 6 }}>
             <img style={{ float: 'left' }} src={GrapeImg} alt="" height="60px" />
-            <div style={{ fontSize: 38, float: 'left', color: '#6e72df', fontWeight: 700 }}>SEKG</div>
+            <div style={{ fontSize: 38, float: 'left', color: '#6e72df', fontWeight: 700 }}>cmct</div>
           </div>
           <Anchor onClick={this.handleClick} className={Styles.anchor}>
             {dataSource.length > 0
               ? <Link href="#components-anchor-props" style={{ margin: 10 }} title="知识属性" />
-              : null
-            }
+              : null}
             <Link href="#components-anchor-graph" style={{ margin: 10 }} title="关系图" />
             {imgList.length > 0
               ? <Link href="#components-anchor-pics" style={{ margin: 10 }} title="相关图片" />
-              : null
-            }
+              : null}
             {this.handleAnchor(wikiLinks)}
             <Link href="#components-anchor-pages" style={{ margin: 10 }} title="相关论文" />
           </Anchor>
@@ -591,8 +588,8 @@ class FirstGraph extends React.Component {
           <div style={{ height: 60, margin: '10px 0 0 20px' }}>
             <Input
               value={searchKey}
-              onChange={e => this.setState({ searchKey: e.target.value })}
-              onPressEnter={e => this.handleJump(e.target.value)}
+              onChange={(e) => this.setState({ searchKey: e.target.value })}
+              onPressEnter={(e) => this.handleJump(e.target.value)}
               placeholder="请输入科学教育相关知识点"
               style={{
                 borderBottomRightRadius: 0,
@@ -664,7 +661,7 @@ class FirstGraph extends React.Component {
                 className={Styles.myTable}
                 showHeader={false}
                 pagination={false}
-                rowKey={record => record.propertyname}
+                rowKey={(record) => record.propertyname}
               />
             </Card>
             <Card
@@ -705,8 +702,7 @@ class FirstGraph extends React.Component {
                         >
                           {index === graphHistory.length - 1
                             ? <Icon theme="filled" type="right-circle" style={{ marginRight: 10 }} />
-                            : <div style={{ width: 24, display: 'inline-block' }} />
-                          }
+                            : <div style={{ width: 24, display: 'inline-block' }} />}
                           {e.name}
                         </a>
                       </div>
@@ -760,7 +756,7 @@ class FirstGraph extends React.Component {
                   options={options}
                   value={filter}
                   rows={4}
-                  onChange={value => this.setState({ filter: value })}
+                  onChange={(value) => this.setState({ filter: value })}
                   allowClear={false}
                 />
               )}
@@ -802,8 +798,7 @@ class FirstGraph extends React.Component {
                                 : !item.venue.info.name_zh ? '未知'
                                   : item.venue.info.name_zh.length === 0 ? '未知'
                                     : item.venue.info.name
-                                      ? item.venue.info.name : '未知'
-                            }
+                                      ? item.venue.info.name : '未知'}
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <Icon
                               type="clock-circle"

@@ -3,7 +3,7 @@ import request from '../utils/request'
 
 export function getPermission(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/getPermission',
+    url: '/cmct/api/getPermission',
     data: body,
     dataType: 'text',
     rSymbol,
@@ -12,7 +12,7 @@ export function getPermission(body, rSymbol) {
 
 export function search(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/totalsearch',
+    url: '/cmct/api/totalsearch',
     data: body,
     rSymbol,
   })
@@ -20,7 +20,7 @@ export function search(body, rSymbol) {
 
 export function detailTable(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/changebyinstancelist',
+    url: '/cmct/api/changebyinstancelist',
     data: body,
     rSymbol,
   })
@@ -28,7 +28,7 @@ export function detailTable(body, rSymbol) {
 
 export function graphSearch(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/instanceList',
+    url: '/cmct/api/instanceList',
     data: body,
     rSymbol,
   })
@@ -36,7 +36,7 @@ export function graphSearch(body, rSymbol) {
 
 export function qaSearch(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/course/inputQuestion',
+    url: '/cmct/api/course/inputQuestion',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -44,7 +44,7 @@ export function qaSearch(body, rSymbol) {
 
 export function kCardSearch(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/kCardSearch',
+    url: '/cmct/api/kCardSearch',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -52,7 +52,7 @@ export function kCardSearch(body, rSymbol) {
 
 export function detailCard(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/getKnowledgeCard',
+    url: '/cmct/api/getKnowledgeCard',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -60,7 +60,7 @@ export function detailCard(body, rSymbol) {
 
 export function relatedPage(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/relatedsubject',
+    url: '/cmct/api/relatedsubject',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -68,7 +68,7 @@ export function relatedPage(body, rSymbol) {
 
 export function callBack(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/callBack',
+    url: '/cmct/api/callBack',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -76,7 +76,7 @@ export function callBack(body, rSymbol) {
 
 export function querygraph(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/querygraph',
+    url: '/cmct/api/querygraph',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -84,7 +84,7 @@ export function querygraph(body, rSymbol) {
 
 export function queryByUri(body, rSymbol) {
   return request.post({
-    url: '/sekg/api/queryByUri',
+    url: '/cmct/api/queryByUri',
     data: qs.stringify(body),
     rSymbol,
   })
@@ -92,7 +92,7 @@ export function queryByUri(body, rSymbol) {
 
 export function getInstGraph(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/getInstGraph',
+    url: '/cmct/api/getInstGraph',
     data: body,
     rSymbol,
   })
@@ -100,7 +100,7 @@ export function getInstGraph(body, rSymbol) {
 
 export function fyTotal(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/fytotalsearch',
+    url: '/cmct/api/fytotalsearch',
     data: body,
     rSymbol,
   })
@@ -108,7 +108,7 @@ export function fyTotal(body, rSymbol) {
 
 export function newSearch(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/science/search',
+    url: '/cmct/api/science/search',
     data: body,
     rSymbol,
   })
@@ -116,7 +116,7 @@ export function newSearch(body, rSymbol) {
 
 export function newResult(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/science/querygraphByUri',
+    url: '/cmct/api/science/querygraphByUri',
     data: body,
     rSymbol,
   })
@@ -124,7 +124,7 @@ export function newResult(body, rSymbol) {
 
 export function getClassTree(body, rSymbol) {
   return request.get({
-    url: '/sekg/api/science/classList',
+    url: '/cmct/api/science/classList',
     data: body,
     rSymbol,
   })

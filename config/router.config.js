@@ -1,10 +1,14 @@
 export default [
   {
-    path: '/sekg',
-    redirect: '/sekg/searchPage',
+    path: '/',
+    redirect: '/cmct/searchPage',
   },
   {
-    path: '/sekg',
+    path: '/cmct',
+    redirect: '/cmct/searchPage',
+  },
+  {
+    path: '/cmct',
     component: '../layouts',
     routes: [
       {

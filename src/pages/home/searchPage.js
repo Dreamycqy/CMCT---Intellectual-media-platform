@@ -103,7 +103,7 @@ class ClusterBroker extends React.Component {
 
   handleJumpGraph = () => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/sekg/classGraph',
+      pathname: '/cmct/classGraph',
       query: {
       },
     }))
@@ -125,7 +125,7 @@ class ClusterBroker extends React.Component {
           <div style={{ height: 70, width: 900, display: 'inline-block' }}>
             <div style={{ height: 60, display: 'inline-block', float: 'left' }}>
               <img style={{ float: 'left' }} src={GrapeImg} alt="" height="60px" />
-              <div style={{ fontSize: 38, float: 'left', color: '#6e72df', fontWeight: 700 }}>SEKG</div>
+              <div style={{ fontSize: 38, float: 'left', color: '#6e72df', fontWeight: 700 }}>cmct</div>
             </div>
             <AutoComplete
               size="large"
@@ -232,7 +232,7 @@ class ClusterBroker extends React.Component {
                       <a
                         href="javascript:;"
                         onClick={() => {
-                          window.open(`/sekg/newGraph?uri=${escape(item.uri)}&type=${item.type}`)
+                          window.open(`/cmct/newGraph?uri=${escape(item.uri)}&type=${item.type}`)
                         }}
                       >
                         {this.handleHighlight(item.label, filter)}

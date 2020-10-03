@@ -10,10 +10,10 @@ import { getUrlParams } from '@/utils/common'
 import Chart from '@/components/charts/graph'
 import { newResult } from '@/services/edukg'
 import GrapeImg from '@/assets/grape.png'
-import kpchinaTitle from '@/assets/kpchina_title.png'
-import baiduTitle from '@/assets/baidu_title.png'
-import kepuTitle from '@/assets/kepu_title.jpg'
-import kpsourceTitle from '@/assets/kpsource_title.jpg'
+// import kpchinaTitle from '@/assets/kpchina_title.png'
+// import baiduTitle from '@/assets/baidu_title.png'
+// import kepuTitle from '@/assets/kepu_title.jpg'
+// import kpsourceTitle from '@/assets/kpsource_title.jpg'
 import Styles from './style.less'
 
 const { Link } = Anchor
@@ -439,16 +439,16 @@ class FirstGraph extends React.Component {
   renderCard = (list) => {
     const result = []
     for (const obj in list) { // eslint-disable-line
-      let src = ''
-      if (obj === '科普中国资源') {
-        src = kpchinaTitle
-      } else if (obj === '科学百科词条') {
-        src = baiduTitle
-      } else if (obj.indexOf('中国科普博览') > -1) {
-        src = kepuTitle
-      } else if (obj.indexOf('科普活动资源服务平台') > -1) {
-        src = kpsourceTitle
-      }
+      const src = ''
+      // if (obj === '科普中国资源') {
+      //   src = kpchinaTitle
+      // } else if (obj === '科学百科词条') {
+      //   src = baiduTitle
+      // } else if (obj.indexOf('中国科普博览') > -1) {
+      //   src = kepuTitle
+      // } else if (obj.indexOf('科普活动资源服务平台') > -1) {
+      //   src = kpsourceTitle
+      // }
       result.push(
         <Card
           id={obj}

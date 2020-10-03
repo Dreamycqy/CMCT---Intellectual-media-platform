@@ -1,22 +1,20 @@
 import React from 'react'
-import { Button, AutoComplete, Input, List, Empty, Avatar, Checkbox, Divider } from 'antd'
+import { Button, AutoComplete, Input, List, Empty, Divider, Avatar } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { newSearch } from '@/services/edukg'
 import { getUrlParams } from '@/utils/common'
 import kgIcon from '@/assets/kgIcon.png'
 import GrapeImg from '@/assets/grape.png'
-import noteImg from '@/assets/eduIcon/note.png'
-import phyImg from '@/assets/eduIcon/phy.png'
-import chemImg from '@/assets/eduIcon/chem.png'
-import bioImg from '@/assets/eduIcon/bio.png'
-import geoImg from '@/assets/eduIcon/geo.png'
+import color from '@/constants/colorList'
+import targetData from '@/constants/dataList'
+import place from '@/assets/place.png'
+// import phyImg from '@/assets/eduIcon/phy.png'
+// import chemImg from '@/assets/eduIcon/chem.png'
+// import bioImg from '@/assets/eduIcon/bio.png'
+// import geoImg from '@/assets/eduIcon/geo.png'
 
 let localCounter = 0
-const plainOptions = [
-  { label: '实体', value: 'instance' },
-  { label: '概念', value: 'class' },
-]
 
 @connect()
 class ClusterBroker extends React.Component {
@@ -26,9 +24,7 @@ class ClusterBroker extends React.Component {
       filter: getUrlParams().filter || '',
       loading: false,
       dataSource: [],
-      oriSource: [],
       firstIn: true,
-      selectValue: ['instance', 'class'],
     }
   }
 
@@ -39,36 +35,18 @@ class ClusterBroker extends React.Component {
     }
   }
 
-  checkAvatar = (uri) => {
-    if (uri.indexOf('geo#') > -1) {
-      return geoImg
-    } else if (uri.indexOf('biology#') > -1) {
-      return bioImg
-    } else if (uri.indexOf('physics#') > -1) {
-      return phyImg
-    } else if (uri.indexOf('chemistry#') > -1) {
-      return chemImg
-    } else {
-      return noteImg
-    }
+  checkAvatar = () => {
+    return ''
   }
 
   search = async (filter) => {
-    const { selectValue } = this.state
     this.setState({ loading: true, filter, firstIn: false })
     const data = await newSearch({
       searchKey: filter,
     })
     if (data.data) {
-      if (selectValue.length === 2) {
-        this.setState({ dataSource: data.data })
-      } else {
-        this.setState({ dataSource: data.data.filter((e) => {
-          return e.type === selectValue[0]
-        }) })
-      }
       this.setState({
-        oriSource: data.data,
+        dataSource: targetData,
       })
     }
     this.setState({ loading: false })
@@ -91,16 +69,6 @@ class ClusterBroker extends React.Component {
     this.setState({ filter: value })
   }
 
-  handleFilter = (value) => {
-    const { oriSource } = this.state
-    this.setState({ selectValue: value })
-    if (value.length === 2) {
-      this.setState({ dataSource: oriSource })
-    } else {
-      this.setState({ dataSource: oriSource.filter((e) => { return e.type === value[0] }) })
-    }
-  }
-
   handleJumpGraph = () => {
     this.props.dispatch(routerRedux.push({
       pathname: '/cmct/classGraph',
@@ -109,28 +77,47 @@ class ClusterBroker extends React.Component {
     }))
   }
 
+  renderTags = (list) => {
+    const result = []
+    list.forEach((e) => {
+      const index = Number(`${Math.random()}`.charAt(3))
+      result.push(
+        <span
+          style={{
+            color: 'white',
+            padding: '2px 20px',
+            display: 'inline-block',
+            textAlign: 'center',
+            border: '1px solid',
+            backgroundColor: color.line[index],
+            borderColor: color.line[index],
+            borderRadius: 4,
+            marginRight: 12,
+          }}
+        >
+          {e}
+        </span>,
+      )
+    })
+    return result
+  }
+
   render() {
     const {
-      dataSource, filter, loading, firstIn, selectValue,
+      dataSource, filter, loading, firstIn,
     } = this.state
-    const rtn1 = dataSource.map(i => ({ raw: i, len: i.label }))
-      .sort((p, n) => p.len.indexOf(filter) - n.len.indexOf(filter))
-      .map(i => i.raw)
-    const rtn = rtn1.map(i => ({ raw: i, len: i.label.length }))
-      .sort((p, n) => p.len - n.len)
-      .map(i => i.raw)
     return (
-      <div style={{ margin: '0 auto', width: 1200, minHeight: 800, backgroundColor: '#ffffffee', paddingTop: 20 }}>
+      <div style={{ margin: '0 auto', minHeight: 800, backgroundColor: '#ffffffee', paddingTop: firstIn ? 250 : 20 }}>
         <div style={{ marginBottom: '0 auto 20px', textAlign: 'center' }}>
-          <div style={{ height: 70, width: 900, display: 'inline-block' }}>
+          <div style={{ height: 70, width: firstIn ? 900 : 1100, display: 'inline-block' }}>
             <div style={{ height: 60, display: 'inline-block', float: 'left' }}>
               <img style={{ float: 'left' }} src={GrapeImg} alt="" height="60px" />
-              <div style={{ fontSize: 38, float: 'left', color: '#6e72df', fontWeight: 700 }}>cmct</div>
+              <div style={{ fontSize: 18, float: 'left', color: '#6e72df', fontWeight: 700, lineHeight: '60px' }}>文旅智媒平台</div>
             </div>
             <AutoComplete
               size="large"
               style={{
-                width: 520, float: 'left', marginLeft: 30,
+                width: firstIn ? 520 : 720, float: 'left', marginLeft: 30,
               }}
               dataSource={[]}
               value={filter}
@@ -142,7 +129,7 @@ class ClusterBroker extends React.Component {
             >
               <Input
                 onPressEnter={e => this.search(e.target.value)}
-                placeholder="请输入科学教育相关知识点"
+                placeholder="请输入您感兴趣的文旅内容"
                 style={{
                   borderBottomRightRadius: 0,
                   borderTopRightRadius: 0,
@@ -170,33 +157,21 @@ class ClusterBroker extends React.Component {
           <br />
           <div style={{ height: 30, width: 900, display: 'inline-block' }}>
             例：
-            <a href="javascript:;" onClick={() => this.search('亚洲')}>亚洲</a>
+            <a href="javascript:;" onClick={() => this.search('玉渊潭公园')}>玉渊潭公园</a>
             <Divider type="vertical" />
-            <a href="javascript:;" onClick={() => this.search('法拉第电磁感应定律')}>法拉第电磁感应定律</a>
+            <a href="javascript:;" onClick={() => this.search('故宫博物院')}>故宫博物院</a>
             <Divider type="vertical" />
-            <a href="javascript:;" onClick={() => this.search('动能、势能的大小变化及判断')}>动能、势能的大小变化及判断</a>
+            <a href="javascript:;" onClick={() => this.search('圆明园公园')}>圆明园公园</a>
           </div>
           <br />
-          <div
-            style={{
-              display: firstIn === true ? 'none' : 'inline-block',
-              width: 900,
-              textAlign: 'left',
-            }}
-          >
-            <Checkbox.Group
-              options={plainOptions} value={selectValue}
-              onChange={this.handleFilter}
-            />
-          </div>
           <List
             itemLayout="vertical"
             size="large"
-            dataSource={rtn}
+            dataSource={dataSource}
             loading={loading}
             style={{
               // border: '1px solid #e8e8e8',
-              width: 900,
+              width: 1100,
               display: dataSource.length > 0 || loading === true ? 'block' : 'none',
               backgroundColor: '#ffffffa6',
               borderRadius: 4,
@@ -208,64 +183,47 @@ class ClusterBroker extends React.Component {
               showQuickJumper: true,
             }}
             renderItem={(item) => {
-              let target2
-              let target3
-              for (const i of item.property) {
-                if (i.type === 'image' || i.object.indexOf('getjpg') > 0 || i.object.indexOf('getpng') > 0) {
-                  if (!target3) {
-                    target3 = i
-                  }
-                }
-                if (i.predicate_label === '分类' && i.object_label.length > 0) {
-                  target2 = i
-                }
-              }
               return (
-                <List.Item style={{ padding: 20 }}>
+                <List.Item
+                  style={{ padding: 20 }}
+                  extra={(
+                    <img
+                      width={272}
+                      alt="logo"
+                      src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                    />
+                  )}
+                >
                   <List.Item.Meta
-                    avatar={target3 ? (
-                      <Avatar size={64} src={target3.object} />
-                    ) : (
-                      <Avatar size={64} src={this.checkAvatar(item.uri)} />
+                    avatar={(
+                      <div style={{ textAlign: 'center' }}>
+                        <Avatar src={place} size="large" />
+                        <p style={{ fontSize: 12, marginTop: 2, color: '#888' }}>景点</p>
+                      </div>
                     )}
                     title={(
                       <a
                         href="javascript:;"
                         onClick={() => {
-                          window.open(`/cmct/newGraph?uri=${escape(item.uri)}&type=${item.type}`)
+                          window.open(`/cmct/knowledgeCard?name=${item.name}`)
                         }}
                       >
-                        {this.handleHighlight(item.label, filter)}
+                        {this.handleHighlight(item.name, filter)}
                       </a>
                     )}
                     description={(
                       <span>
-                        <span
-                          style={{
-                            color: 'white',
-                            padding: '2px 20px',
-                            display: 'inline-block',
-                            textAlign: 'center',
-                            border: '1px solid',
-                            backgroundColor: item.type === 'instance' ? '#24b0e6' : '#28d100',
-                            borderColor: item.type === 'instance' ? '#24b0e6' : '#28d100',
-                            borderRadius: 4,
-                            marginRight: 12,
-                          }}
-                        >
-                          {item.type === 'instance' ? '实体' : '概念'}
-                        </span>
-                        <span>
-                          {target2 ? '所属分类：' : ''}
-                        </span>
-                        <span>
-                          {target2 ? target2.object_label.length > 0 ? target2.object_label : target2.object : ''}
-                        </span>
+                        {this.renderTags(item.tags)}
                       </span>
                     )}
                   />
-                  <div style={{ color: '#888', fontSize: 12, marginLeft: 80 }}>
-                    {`uri: ${item.uri}`}
+                  <div style={{ color: '#888' }}>
+                    <p>{`简介: ${item.info}`}</p>
+                    <p>{`经纬: ${item.geo.join(', ')}`}</p>
+                    <p>
+                      {`地址: ${item.address}`}
+                      <a href="javascript:;">&nbsp;&nbsp;&gt;&nbsp;在地图上发现</a>
+                    </p>
                   </div>
                 </List.Item>
               )
@@ -277,7 +235,7 @@ class ClusterBroker extends React.Component {
           description="没有结果"
         />
         <div
-          style={{ marginTop: 100, display: firstIn === true ? 'block' : 'none', textAlign: 'center' }}
+          style={{ marginTop: 100, display: 'none', textAlign: 'center' }}
         >
           <div style={{ display: 'inline-block' }}>
             <img src={kgIcon} alt="" width="200px" style={{ float: 'left' }} />

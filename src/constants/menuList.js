@@ -4,8 +4,16 @@ export default {
   //   en: 'Home',
   // },
   searchPage: {
-    cn: '搜索',
+    cn: '全局搜索',
     en: 'Search',
+  },
+  mapPage: {
+    cn: '地图俯瞰',
+    en: 'mapView',
+  },
+  dashboard: {
+    cn: '数据概览',
+    en: 'dashboard',
   },
   // graph: {
   //   cn: '知识图谱',

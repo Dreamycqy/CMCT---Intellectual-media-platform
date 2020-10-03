@@ -129,3 +129,11 @@ export function getClassTree(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getNews(body, rSymbol) {
+  return request.get({
+    url: '/cmct/api/typeXinwen/svc/xlore/queryRelatedNews',
+    data: body,
+    rSymbol,
+  })
+}

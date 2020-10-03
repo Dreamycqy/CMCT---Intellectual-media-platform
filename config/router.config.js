@@ -16,12 +16,20 @@ export default [
         component: './home/searchPage',
       },
       {
+        path: 'knowledgeCard',
+        component: './graph/knowledgeCard',
+      },
+      {
         path: 'newGraph',
         component: './graph/newGraph',
       },
       {
         path: 'classGraph',
         component: './graph/classGraph',
+      },
+      {
+        path: 'mapPage',
+        component: './map',
       },
     ],
   },

@@ -2,11 +2,10 @@ import React from 'react'
 import { Layout, ConfigProvider, Menu } from 'antd'
 import { connect } from 'dva'
 import Link from 'umi/link'
+import router from 'umi/router'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import menuList from '@/constants/menuList'
-import logoFooter from '@/assets/logofooter.png'
-import backGroundImg from '@/assets/14624.jpg'
 
 const {
   Header, Footer, Content,
@@ -20,6 +19,25 @@ function mapStateToProps(state) {
 }
 @connect(mapStateToProps)
 class MainLayout extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      key: window.location.pathname.split('/')[2],
+    }
+  }
+
+  componentWillReceiveProps = () => {
+    const key = window.location.pathname.split('/')[2]
+    this.setState({
+      key,
+    })
+  }
+
+  handleSelect = (key) => {
+    this.setState({ key })
+    router.push(`/cmct/${key}`)
+  }
+
   handleLocaleChange = () => {
     this.props.dispatch({
       type: 'global/updateState',
@@ -45,7 +63,6 @@ class MainLayout extends React.Component {
             style={{
               height: 40,
               backgroundColor: '#001529',
-              borderBottom: '1px solid #e8e8e8',
               position: 'fixed',
               top: 0,
               zIndex: 999,
@@ -64,10 +81,19 @@ class MainLayout extends React.Component {
                 lineHeight: '40px',
               }}
             >
-              <Link to="/cmct">cmct 科学教育图谱</Link>
+              <Link to="/cmct">文旅智媒平台</Link>
             </div>
+            <Menu
+              mode="horizontal"
+              theme="dark"
+              selectedKeys={[this.state.key]}
+              style={{ lineHeight: '40px', float: 'right', height: 39 }}
+              onClick={e => this.handleSelect(e.key)}
+            >
+              {this.makeMenu()}
+            </Menu>
           </Header>
-          <Content style={{ background: `url(${backGroundImg}) top`, backgroundSize: '120%', minHeight: 800, marginTop: 40 }}>
+          <Content style={{ minHeight: 800, marginTop: 40 }}>
             {this.props.children}
           </Content>
           <Footer
@@ -76,11 +102,8 @@ class MainLayout extends React.Component {
             <div style={{ padding: '0 30px' }}>
               <div style={{ textAlign: 'center', color: 'white' }}>
                 <div style={{ display: 'inline-block' }}>
-                  <img style={{ float: 'left', marginTop: 4, marginRight: 10 }} src={logoFooter} alt="" height="36px" />
-                  <div style={{ float: 'left', textAlign: 'left' }}>
-                    <div style={{ fontSize: 18 }}>知 识 工 程 研 究 室</div>
-                    <div style={{ fontSize: 10 }}>互联网教育智能技术及应用国家工程实验室</div>
-                  </div>
+                  <div style={{ fontSize: 18 }}>文 化 旅 游 部</div>
+                  <div style={{ fontSize: 10 }}>清 华 大 学 知 识 工 程 研 究 室</div>
                 </div>
               </div>
             </div>

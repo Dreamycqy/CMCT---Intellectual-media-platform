@@ -1,5 +1,4 @@
 # react-cmct
-Frontend of Edukg (K12 Education Knowledge Graph) system build with React.
 
 1.环境
 
@@ -19,7 +18,7 @@ git clone https://github.com/Dreamycqy/react-edukg.git
 
 npm run build
 
-自动拉取master最新commit，安装依赖环境，构建并执行pm2进程，启动服务器，端口号8567
+自动拉取master最新commit，安装依赖环境，构建并执行pm2进程，启动服务器，端口号8101
 
 3.本地开发
 
@@ -27,6 +26,6 @@ npm run build
 
 安装各项依赖: yarn install
 
-目录下启动前端，端口号8765: npm run start
+目录下启动前端，端口号8102: npm run start
 
-目录下启动代理服务器（用于跨域），端口号8567: npm run server
+目录下启动代理服务器（用于跨域），端口号8101: npm run server

@@ -31,7 +31,7 @@ export default {
   outputPath: './public/cmct/',
   publicPath: '/cmct/',
   proxy: {
-    '/cmct/api/': { target: 'http://127.0.0.1:8567/', changeOrigin: true },
+    '/cmct/api/': { target: 'http://127.0.0.1:8101/', changeOrigin: true },
   },
   define: defineProperty(),
   routes: pageRoutes,

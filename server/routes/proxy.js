@@ -9,12 +9,14 @@ router.all('/', (req, res) => {
   const { hostname } = req
   const { method } = req
   let url = req.baseUrl
-  const { basePath, newPath } = config
+  const { basePath, newPath, newsPath } = config
   if (url.indexOf('api') > -1) {
     url = url.split('/api')[1] // eslint-disable-line
   }
   if (url.indexOf('science') > -1) {
     url = newPath + url
+  } else if (url.indexOf('typeXinwen') > -1) {
+    url = newsPath + url.split('/typeXinwen')[1]
   } else {
     url = (typeof basePath === 'string' ? basePath : basePath[hostname]) + url
   }

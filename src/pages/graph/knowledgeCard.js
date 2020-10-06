@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Spin, Table, List, Icon, Cascader, Input, Button, Modal, Popover, Avatar } from 'antd'
 import Slider from 'react-slick'
-import ReactPlayer from 'react-player/lazy'
+import ReactPlayer from 'react-player'
 import moment from 'moment'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -12,6 +12,7 @@ import { getUrlParams } from '@/utils/common'
 import GrapeImg from '@/assets/grape.png'
 import dataList from '@/constants/dataList'
 import place from '@/assets/place.png'
+import Explore from './explore'
 import Styles from './style.less'
 
 const columns = [{
@@ -107,7 +108,7 @@ class FirstGraph extends React.Component {
       },
       modalVisible: false,
       resource: [],
-      showExplore: false,
+      showExplore: true,
     }
     this.targetData = _.find(dataList, { name: getUrlParams().name })
   }
@@ -201,7 +202,7 @@ class FirstGraph extends React.Component {
             </Button>
           </div>
         </div>
-        <div style={{ float: 'left', width: '60%', padding: 10 }}>
+        <div style={{ float: 'left', width: '65%', padding: 10 }}>
           <Card
             className={Styles.myCard}
             id="components-anchor-graph"
@@ -237,15 +238,9 @@ class FirstGraph extends React.Component {
                     display: showExplore === true ? 'block' : 'none',
                   }}
                 >
-                  <div style={{ color: '#1e95c3', fontWeight: 'bold', marginBottom: 20, fontSize: 18 }}>
-                    <div
-                      style={{
-                        display: 'inline-block', width: 10, height: 20, backgroundColor: '#1e95c3',
-                      }}
-                    />
-                    &nbsp;&nbsp;&nbsp;&nbsp;探索
+                  <div style={{ width: '100%', height: 500, backgroundColor: '#e8e8e8' }}>
+                    <Explore />
                   </div>
-                  <div style={{ width: '100%', height: 400, backgroundColor: '#e8e8e8' }}>&nbsp;</div>
                 </div>
                 <div style={{ marginBottom: 20, fontSize: 18 }}>
                   <div style={{ color: '#1e95c3', fontWeight: 'bold', marginBottom: 20 }}>

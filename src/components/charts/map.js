@@ -2,6 +2,7 @@ import React from 'react'
 import echarts from 'echarts'
 import _ from 'lodash'
 import resizeListener, { unbind } from 'element-resize-event'
+import placeData from '@/constants/5aPlace'
 // import color from '@/constants/colorList'
 
 export default class GraphChart extends React.Component {
@@ -54,8 +55,36 @@ export default class GraphChart extends React.Component {
     return result
   }
 
+  convertData = (list, parentInfo) => {
+    const result = []
+    list.forEach((e) => {
+      if (!_.find(result, { where: e['所在省份'] }) && parentInfo.length === 1) {
+        result.push({
+          name: e['景区名称'],
+          value: [Number(e['经度']), Number(e['纬度']), 0],
+          where: e['所在省份'],
+          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+        })
+      } else if (parentInfo.length === 2 && e['所在省份'] === parentInfo[1].cityName) {
+        result.push({
+          name: e['景区名称'],
+          value: [Number(e['经度']), Number(e['纬度']), 0],
+          where: e['所在省份'],
+          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+        })
+      } else if (parentInfo.length > 2 && e['景区名称'].indexOf(parentInfo[2].cityName) > -1) {
+        result.push({
+          name: e['景区名称'],
+          value: [Number(e['经度']), Number(e['纬度']), 0],
+          where: e['所在省份'],
+          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+        })
+      }
+    })
+    return result
+  }
+
   renderChart = (dom, mapData, parentInfo, instance, forceUpdate = false) => {
-    console.log(parentInfo)
     if (!mapData || mapData.length < 1) {
       return
     }
@@ -75,13 +104,20 @@ export default class GraphChart extends React.Component {
       options = {
         tooltip: {
           trigger: 'item',
+          borderRadius: 4,
           formatter: p => {
-            let val = p.value
-            if (!val) {
-              val = 0
+            let res = ''
+            if (!p.data.where) {
+              const txtCon = `${p.name}`
+              res = txtCon
+            } else {
+              res += '<div style="text-align:center;width:260px;">'
+              res += `<div><img style='width:250px;height:150px;' src='${p.data.pic}' /></div>`
+              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;'>${p.name}</div>`
+              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;font-size:12px;'>${p.name}<br />是国家5A级景区，位于${p.data.where}，<br />下面是对该景区的大段描述balabala</div>`
+              res += '</div>'
             }
-            const txtCon = `${p.name}:${val.toFixed(2)}`
-            return txtCon
+            return res
           },
         },
         title: {
@@ -99,24 +135,6 @@ export default class GraphChart extends React.Component {
           feature: {
             restore: {
               show: false,
-            },
-            dataView: {
-              optionToContent(opt) {
-                const series = opt.series[0].data // 折线图数据
-                const tdHeads = '<th  style="padding: 0 20px">所在地区</th><th style="padding: 0 20px">销售额</th>' // 表头
-                const tdBodys = '' // 数据
-                let table = `<table border="1" style="margin-left:20px;border-collapse:collapse;font-size:14px;text-align:left;"><tbody><tr>${tdHeads} </tr>`
-                for (let i = 0; i < series.length; i++) {
-                  table += `<tr>
-                          <td style="padding: 0 50px">${series[i].name}</td>
-                          <td style="padding: 0 50px">${series[
-                    i
-                  ].value.toFixed(2)}万</td>
-                          </tr>`
-                }
-                table += '</tbody></table>'
-                return table
-              },
             },
             saveAsImage: {
               name: `${parentInfo[parentInfo.length - 1].cityName}地图`,
@@ -136,12 +154,72 @@ export default class GraphChart extends React.Component {
           top: 15,
           right: 35,
         },
+        geo: {
+          show: true,
+          map: 'Map',
+          label: {
+            normal: {
+              show: false,
+            },
+            emphasis: {
+              show: false,
+            },
+          },
+          roam: true,
+          itemStyle: {
+            normal: {
+              areaColor: '#24CFF4',
+              borderColor: '#53D9FF',
+              borderWidth: 1.3,
+              shadowBlur: 15,
+              shadowColor: 'rgb(58,115,192)',
+              shadowOffsetX: 7,
+              shadowOffsetY: 6,
+            },
+            emphasis: {
+              areaColor: '#8dd7fc',
+              borderWidth: 1.6,
+              shadowBlur: 25,
+            },
+          },
+        },
         series: [{
+          name: 'Top 5',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          symbol: 'pin',
+          symbolSize: [50, 50],
+          roam: true, // 是否可缩放
+          label: {
+            normal: {
+              show: true,
+              textStyle: {
+                color: '#fff',
+                fontSize: 9,
+              },
+              formatter(value) {
+                return value.data.name
+              },
+            },
+          },
+          itemStyle: {
+            normal: {
+              color: '#D8BC37', // 标志颜色
+            },
+          },
+          data: this.convertData(placeData, parentInfo),
+          // showEffectOn: 'render',
+          // rippleEffect: {
+          //   brushType: 'stroke',
+          // },
+          // hoverAnimation: true,
+          zlevel: 2,
+        }, {
           name: '地图',
           type: 'map',
           map: 'Map',
           roam: true, // 是否可缩放
-          zoom: 1.1, // 缩放比例
+          geoIndex: 0,
           data: mapData,
           label: {
             normal: {
@@ -216,9 +294,16 @@ export default class GraphChart extends React.Component {
       myChart._$handlers.click.length = 0 // eslint-disable-line
     }
     myChart.on('click', params => {
-      if (
-        parentInfo[parentInfo.length - 1].code == params.data.cityCode
-      ) {
+      console.log(params)
+      if (parentInfo[parentInfo.length - 1].code === params.data.cityCode) {
+        return
+      }
+      if (params.data.where) {
+        console.log('景区！')
+        const city = params.data.name.split('市')
+        const lowCity = city[city.length - 1].split('县')
+        const district = lowCity[lowCity.length - 1].split('区')
+        window.open(`/cmct/knowledgeCard?name=${district[district.length - 1]}`)
         return
       }
       const { data } = params

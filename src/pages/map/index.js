@@ -58,7 +58,7 @@ class MapPage extends React.Component {
               return
             }
             that.geoJson.features = that.geoJson.features.filter(
-              item => item.properties.adcode == adcode,
+              item => item.properties.adcode === adcode,
             )
           }
           this.setState({ geoJson: that.geoJson })

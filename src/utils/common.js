@@ -54,3 +54,35 @@ export const theSameLabel = (other) => {
   }
   return samelabel
 }
+
+export const rayCasting = (p, poly) => {
+  const px = p[0]
+  const py = p[1]
+  let flag = false
+
+  for (let i = 0, l = poly.length, j = l - 1; i < l; j = i, i++) {
+    const sx = poly[i][0]
+    const sy = poly[i][1]
+    const tx = poly[j][0]
+    const ty = poly[j][1]
+    // 点与多边形顶点重合
+    if ((sx === px && sy === py) || (tx === px && ty === py)) {
+      return true
+    }
+    // 判断线段两端点是否在射线两侧
+    if ((sy < py && ty >= py) || (sy >= py && ty < py)) {
+      // 线段上与射线 Y 坐标相同的点的 X 坐标
+      const x = sx + (py - sy) * (tx - sx) / (ty - sy)
+      // 点在多边形的边上
+      if (x === px) {
+        return true
+      }
+      // 射线穿过多边形的边界
+      if (x > px) {
+        flag = !flag
+      }
+    }
+  }
+  // 射线穿过多边形边界的次数为奇数时点在多边形内
+  return !!flag
+}

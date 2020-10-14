@@ -137,3 +137,11 @@ export function getNews(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getPlaceborder(body, rSymbol) {
+  return request.get({
+    url: '/cmct/api/amapDetail/detail/get/detail',
+    data: body,
+    rSymbol,
+  })
+}

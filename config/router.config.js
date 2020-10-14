@@ -31,6 +31,10 @@ export default [
         path: 'mapPage',
         component: './map',
       },
+      {
+        path: 'dashboard',
+        component: './dashboard',
+      },
     ],
   },
 ]

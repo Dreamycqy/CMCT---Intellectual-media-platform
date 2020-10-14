@@ -1,7 +1,7 @@
 import React from 'react'
 import echarts from 'echarts'
 import _ from 'lodash'
-import resizeListener, { unbind } from 'element-resize-event'
+import resizeListener from 'element-resize-event'
 import placeData from '@/constants/5aPlace'
 // import color from '@/constants/colorList'
 
@@ -10,6 +10,27 @@ export default class GraphChart extends React.Component {
     super(...props)
     this.dom = null
     this.instance = null
+    this.showAttack = false
+    this.lineData = [{
+      name: '海淀区清华大学',
+      target: [
+        { name: '海淀区北京大学', list: ['类型：大学', '类型：世界一流大学', '位于：海淀区'] },
+        { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
+        { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
+      ],
+    }, {
+      name: '海淀区中央广播电视塔',
+      target: [
+        { name: '海淀区北京大学', list: ['类型1：aaa', '类型2：bbb'] },
+        { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
+        { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
+      ],
+    }]
+    this.attackList = []
+    this.state = {
+      showInfoSide: false,
+      select: '',
+    }
   }
 
   componentDidMount() {
@@ -56,6 +77,9 @@ export default class GraphChart extends React.Component {
   }
 
   convertData = (list, parentInfo) => {
+    if (this.props.noPoint === true) {
+      return
+    }
     const result = []
     list.forEach((e) => {
       if (!_.find(result, { where: e['所在省份'] }) && parentInfo.length === 1) {
@@ -63,6 +87,7 @@ export default class GraphChart extends React.Component {
           name: e['景区名称'],
           value: [Number(e['经度']), Number(e['纬度']), 0],
           where: e['所在省份'],
+          aoiCode: e['区域码'],
           pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
         })
       } else if (parentInfo.length === 2 && e['所在省份'] === parentInfo[1].cityName) {
@@ -70,6 +95,7 @@ export default class GraphChart extends React.Component {
           name: e['景区名称'],
           value: [Number(e['经度']), Number(e['纬度']), 0],
           where: e['所在省份'],
+          aoiCode: e['区域码'],
           pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
         })
       } else if (parentInfo.length > 2 && e['景区名称'].indexOf(parentInfo[2].cityName) > -1) {
@@ -77,6 +103,7 @@ export default class GraphChart extends React.Component {
           name: e['景区名称'],
           value: [Number(e['经度']), Number(e['纬度']), 0],
           where: e['所在省份'],
+          aoiCode: e['区域码'],
           pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
         })
       }
@@ -84,10 +111,34 @@ export default class GraphChart extends React.Component {
     return result
   }
 
+  handleLine = (list) => {
+    if (this.props.noPoint === true) {
+      return
+    }
+    const result = []
+    list.forEach((item) => {
+      const ori = _.find(placeData, { 景区名称: item.name })
+      console.log(ori)
+      item.target.forEach((e) => {
+        const target = _.find(placeData, { 景区名称: e.name })
+        result.push([
+          { coord: [ori['经度'], ori['纬度']], list: e.list },
+          { coord: [target['经度'], target['纬度']] },
+        ])
+      })
+    })
+    return result
+  }
+
+  showInfo = (name) => {
+    this.setState({ select: name, showInfoSide: true })
+  }
+
   renderChart = (dom, mapData, parentInfo, instance, forceUpdate = false) => {
     if (!mapData || mapData.length < 1) {
       return
     }
+    console.log(this.props.geoJson)
     echarts.registerMap('Map', this.props.geoJson)
     let options
     const that = this
@@ -107,15 +158,27 @@ export default class GraphChart extends React.Component {
           borderRadius: 4,
           formatter: p => {
             let res = ''
-            if (!p.data.where) {
-              const txtCon = `${p.name}`
-              res = txtCon
-            } else {
-              res += '<div style="text-align:center;width:260px;">'
-              res += `<div><img style='width:250px;height:150px;' src='${p.data.pic}' /></div>`
-              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;'>${p.name}</div>`
-              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;font-size:12px;'>${p.name}<br />是国家5A级景区，位于${p.data.where}，<br />下面是对该景区的大段描述balabala</div>`
+            if (!p.data || p.data === undefined) {
+              return
+            }
+            if (p.data.list) {
+              res += '<div">'
               res += '</div>'
+              p.data.list.forEach((e) => {
+                res += `<div>${e}</div>`
+              })
+              res += '</div>'
+            } else {
+              if (!p.data.where) {
+                const txtCon = `${p.name}`
+                res = txtCon
+              } else {
+                res += '<div style="text-align:center;width:260px;">'
+                res += `<div><img style='width:250px;height:150px;' src='${p.data.pic}' /></div>`
+                res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;'>${p.name}</div>`
+                res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;font-size:12px;'>${p.name}<br />是国家5A级景区，位于${p.data.where}，<br />下面是对该景区的大段描述balabala</div>`
+                res += '</div>'
+              }
             }
             return res
           },
@@ -184,14 +247,37 @@ export default class GraphChart extends React.Component {
           },
         },
         series: [{
-          name: 'Top 5',
-          type: 'scatter',
-          coordinateSystem: 'geo',
-          symbol: 'pin',
-          symbolSize: [50, 50],
-          roam: true, // 是否可缩放
-          label: {
+          type: 'lines',
+          zlevel: 2,
+          effect: {
+            show: this.showAttack,
+            period: 4, // 箭头指向速度，值越小速度越快
+            trailLength: 0.02, // 特效尾迹长度[0,1]值越大，尾迹越长重
+            symbol: 'arrow', // 箭头图标
+            symbolSize: 15, // 图标大小
+          },
+          lineStyle: {
             normal: {
+              width: 1, // 尾迹线条宽度
+              opacity: 1, // 尾迹线条透明度
+              curveness: 0.1, // 尾迹线条曲直度
+            },
+          },
+          data: this.props.parentInfo.length < 3 ? [] : this.showAttack ? this.attackList : this.handleLine(this.lineData),
+        }, {
+          name: 'Top 5',
+          type: this.props.parentInfo.length > 2 ? 'effectScatter' : 'scatter',
+          coordinateSystem: 'geo',
+          symbol: this.props.parentInfo.length > 2 ? null : 'pin',
+          symbolSize: this.props.parentInfo.length > 2 ? [24, 24] : [30, 30],
+          roam: true, // 是否可缩放
+          rippleEffect: {
+            period: 4,
+            brushType: 'stroke',
+            scale: 8,
+          },
+          label: {
+            normal: this.props.parentInfo.length > 2 ? {
               show: true,
               textStyle: {
                 color: '#fff',
@@ -200,6 +286,18 @@ export default class GraphChart extends React.Component {
               formatter(value) {
                 return value.data.name
               },
+            } : {
+              show: true,
+              textStyle: {
+                color: '#fff',
+                fontSize: 9,
+              },
+              formatter(value) {
+                return value.data.name
+              },
+              color: '#F4E925',
+              shadowBlur: 16,
+              shadowColor: '#333',
             },
           },
           itemStyle: {
@@ -214,6 +312,39 @@ export default class GraphChart extends React.Component {
           // },
           // hoverAnimation: true,
           zlevel: 2,
+        }, {
+          name: 'getAttacked',
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: {
+            period: 4,
+            brushType: 'stroke',
+            scale: 8,
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right', // 显示位置
+              offset: [5, 0], // 偏移设置
+              formatter(params) { // 圆环显示文字
+                return params.data.name
+              },
+              fontSize: 16,
+            },
+            emphasis: {
+              show: true,
+            },
+          },
+          symbol: 'circle',
+          symbolSize: 24,
+          itemStyle: {
+            normal: {
+              show: false,
+              color: '#0f0',
+            },
+          },
+          data: [this.attackedData],
         }, {
           name: '地图',
           type: 'map',
@@ -303,19 +434,42 @@ export default class GraphChart extends React.Component {
         const city = params.data.name.split('市')
         const lowCity = city[city.length - 1].split('县')
         const district = lowCity[lowCity.length - 1].split('区')
-        window.open(`/cmct/knowledgeCard?name=${district[district.length - 1]}`)
+        this.showInfo(district[district.length - 1])
+        this.props.getPlace(params.data.aoiCode, district[district.length - 1])
+        const { data } = params
+        that.props.parentInfoPush({
+          cityName: district[district.length - 1],
+          code: data.aoiCode,
+        }, false)
+        // window.open(`/cmct/knowledgeCard?name=${district[district.length - 1]}`)
         return
       }
       const { data } = params
       that.props.parentInfoPush({
-        cityName: data.name,
-        code: data.cityCode,
-      })
+        cityName: params.data.where ? params.data.name : data.name,
+        code: params.data.where ? data.aoiCode : data.cityCode,
+      }, true)
     })
     return myChart
   }
 
   render() {
-    return <div className="e-charts-graph" ref={t => this.dom = t} style={{ height: '100%' }} />
+    const { showInfoSide, select } = this.state
+    return (
+      <div style={{ height: '100%' }}>
+        <div
+          style={{
+            position: 'fixed',
+            backgroundColor: '#ffffffa6',
+            width: 300,
+            right: 0,
+            height: '100%',
+          }}
+        >
+          <p style={{ marginTop: 60 }}>{select}</p>
+        </div>
+        <div className="e-charts-graph" ref={t => this.dom = t} style={{ height: '100%' }} />
+      </div>
+    )
   }
 }

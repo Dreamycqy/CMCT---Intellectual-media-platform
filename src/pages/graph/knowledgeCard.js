@@ -368,6 +368,7 @@ class FirstGraph extends React.Component {
                       <List.Item.Meta
                         title={(
                           <a
+                            style={{ width: 120, borderTop: '1px solid #e8e8e8', cursor: 'pointer' }}
                             href="javascript:;"
                             onClick={() => { window.open(item.url) }}
                           >

@@ -27,7 +27,6 @@ export default class GraphChart extends React.Component {
     const {
       graph, forcename,
     } = nextProps
-    console.log(forcename, this.props.forcename)
     return !_.isEqual(graph, this.props.graph) || forcename !== this.props.forcename
   }
 
@@ -111,7 +110,6 @@ export default class GraphChart extends React.Component {
         },
       }
     } else {
-      console.log(forcename)
       const nodes = that.hide(_.uniqBy(graph.nodes, 'name'))
       targetIndex = _.findIndex(nodes, { name: forcename })
       if (this.props.newClassGraph) {
@@ -143,13 +141,13 @@ export default class GraphChart extends React.Component {
           edgeSymbol: ['circle', 'arrow'],
           edgeSymbolSize: [4, 10],
           name: forcename,
-          roam: false,
+          roam: true,
           force: {
             initLayout: 'circular',
             repulsion: 50,
             gravity: 0.01,
             edgeLength: 100,
-            layoutAnimation: false,
+            layoutAnimation: true,
           },
           gravity: 1,
           tooltip: {

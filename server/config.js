@@ -8,6 +8,7 @@ const config = {
     newPath: 'http://39.100.31.203:8080/res_lib/',
     newsPath: 'https://api2.newsminer.net',
     amapDetail: 'https://ditu.amap.com/',
+    jimu: 'https://api.jimuall.com/',
   },
   test: {
     env: 'test',
@@ -16,6 +17,7 @@ const config = {
     newPath: 'http://39.100.31.203:8080/res_lib/',
     newsPath: 'https://api2.newsminer.net',
     amapDetail: 'https://ditu.amap.com/',
+    jimu: 'https://api.jimuall.com/',
   },
   production: {
     env: 'production',
@@ -24,6 +26,7 @@ const config = {
     newPath: 'http://39.100.31.203:8080/res_lib/',
     newsPath: 'https://api2.newsminer.net',
     amapDetail: 'https://ditu.amap.com/',
+    jimu: 'https://api.jimuall.com/',
   },
 }
 module.exports = config[process.env.NODE_ENV || 'development']

@@ -7,19 +7,19 @@ export default class D3SimpleTagCloudChart extends React.Component {
   componentDidMount() {
     const containerWidth = this.chartRef.parentElement.offsetWidth
     const data = [
-      { name: '中华文化', value: 12, href: 'http://www.qq.com/' },
-      { name: '清华大学', value: 10, href: 'https://www.taobao.com/' },
-      { name: '天安门', value: 9, href: 'https://www.baidu.com/' },
-      { name: '故宫博物院', value: 8, href: '/cmct/knowledgeCard?name=故宫博物院' },
-      { name: '玉渊潭公园', value: 8, href: '/cmct/knowledgeCard?name=玉渊潭公园' },
+      { name: '中华文化', value: 9, href: 'http://www.qq.com/' },
+      { name: '清华大学', value: 8, href: 'https://www.taobao.com/' },
+      { name: '天安门', value: 8, href: 'https://www.baidu.com/' },
+      { name: '故宫博物院', value: 7, href: '/cmct/knowledgeCard?name=故宫博物院' },
+      { name: '玉渊潭公园', value: 6, href: '/cmct/knowledgeCard?name=玉渊潭公园' },
       { name: '李白', value: 6, href: 'http://www.sina.com.cn/' },
-      { name: '青海湖', value: 6, href: 'http://www.sohu.com/' },
-      { name: '西湖', value: 5, href: 'http://www.meituan.com/' },
-      { name: '长城', value: 5, href: 'http://www.ctrip.com/' },
-      { name: '国家图书馆', value: 7, href: 'https://www.360.cn/' },
-      { name: '六朝古都', value: 6, href: 'https://www.mi.com/' },
-      { name: '杭州', value: 6, href: 'https://www.ele.me/' },
-      { name: '北京大学', value: 7, href: 'https://www.toutiao.com/' },
+      { name: '青海湖', value: 5, href: 'http://www.sohu.com/' },
+      { name: '西湖', value: 4, href: 'http://www.meituan.com/' },
+      { name: '长城', value: 4, href: 'http://www.ctrip.com/' },
+      { name: '国家图书馆', value: 3, href: 'https://www.360.cn/' },
+      { name: '六朝古都', value: 3, href: 'https://www.mi.com/' },
+      { name: '杭州', value: 3, href: 'https://www.ele.me/' },
+      { name: '北京大学', value: 2, href: 'https://www.toutiao.com/' },
     ]
     const chart = d3.select(this.chartRef)
 

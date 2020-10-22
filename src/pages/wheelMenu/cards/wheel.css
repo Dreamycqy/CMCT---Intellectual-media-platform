@@ -1,0 +1,87 @@
+.menuItem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 6em;
+  width: 6em;
+  margin: -3em;
+  text-align: center;
+  /* display: flex; */
+  border-radius: 50%;
+  box-shadow: 
+    10px 10px 10px -11px 
+    rgba(0,0,0,0.3);
+  padding-top: 1.5em;
+  cursor: pointer;
+  -webkit-animation: fadeIn 1.5s 1 ease-in;
+  animation: fadeIn 1.5s 1 ease-in;
+}
+
+.menuItem span {
+  color: white;
+  font-size: 1em;
+  /* display: flex; */
+  margin: auto;
+  transition: font-size .1s ease-out;
+}
+
+.menuItem:hover {
+  height: 7em;
+  width: 7em;
+  margin: -3.5em;
+}
+
+.menuItem:hover span {
+  font-size: 1.5em;
+}
+
+.menuBackground {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 100;
+  background-color: #f0e8d1;
+}
+
+.menuWrapperOpen {
+  opacity: 1;
+  visibility: visible;
+  transition: all .2s ease-out;
+}
+
+.menuWrapperClosed {
+  opacity: 0;
+  visibility: hidden;
+  transition: all .2s ease-out;
+}
+
+.animateMenu {
+  animation:
+    spin 1s 1 
+    cubic-bezier(
+      0.175, 0.585, 0.08, 1.2
+    );
+  animation-delay: .2s
+}
+
+.menuToggle{
+  position: relative;
+  z-index: 2000;
+  height: 500px;
+  width: 500px;
+  border-radius: 50%;
+  outline: none;
+  -webkit-animation: fadeIn 1s 1 ease-in;
+  animation: fadeIn 1s 1 ease-in;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}

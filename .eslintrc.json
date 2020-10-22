@@ -42,6 +42,8 @@
     "react/no-deprecated": [0],
     "arrow-parens": [0],
     "react/no-array-index-key": [0],
+    "max-len": [0],
+    "react/no-access-state-in-setstate": [0],
     "no-param-reassign": [0]
   },
   "parserOptions": {

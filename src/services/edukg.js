@@ -145,3 +145,11 @@ export function getPlaceborder(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getJimuVideo(body, rSymbol) {
+  return request.get({
+    url: '/cmct/api/jimu/nhs/v1/doc/query',
+    data: body,
+    rSymbol,
+  })
+}

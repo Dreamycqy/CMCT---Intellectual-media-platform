@@ -93,7 +93,7 @@ class MainLayout extends React.Component {
               {this.makeMenu()}
             </Menu>
           </Header>
-          <Content style={{ minHeight: 800, marginTop: 40 }}>
+          <Content style={{ minHeight: 1000, marginTop: 40 }}>
             {this.props.children}
           </Content>
           <Footer

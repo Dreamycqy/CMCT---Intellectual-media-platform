@@ -11,34 +11,36 @@ export default class GraphChart extends React.Component {
     this.dom = null
     this.instance = null
     this.showAttack = false
-    this.lineData = [{
-      name: '海淀区清华大学',
-      target: [
-        { name: '海淀区北京大学', list: ['类型：大学', '类型：世界一流大学', '位于：海淀区'] },
-        { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
-        { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
-      ],
-    }, {
-      name: '海淀区中央广播电视塔',
-      target: [
-        { name: '海淀区北京大学', list: ['类型1：aaa', '类型2：bbb'] },
-        { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
-        { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
-      ],
-    }]
+    this.lineData = []
+    // this.lineData = [{
+    //   name: '海淀区清华大学',
+    //   target: [
+    //     { name: '海淀区北京大学', list: ['类型：大学', '类型：世界一流大学', '位于：海淀区'] },
+    //     { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
+    //     { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
+    //   ],
+    // }, {
+    //   name: '海淀区中央广播电视塔',
+    //   target: [
+    //     { name: '海淀区北京大学', list: ['类型1：aaa', '类型2：bbb'] },
+    //     { name: '海淀区紫竹院公园', list: ['类型1：aaa', '类型2：bbb'] },
+    //     { name: '海淀区颐和园', list: ['类型1：aaa', '类型2：bbb'] },
+    //   ],
+    // }]
     this.attackList = []
     this.state = {
       showInfoSide: false,
       select: '',
+      newCenter: [],
     }
   }
 
   componentDidMount() {
-    const { mapData, parentInfo } = this.props
+    const { mapData, parentInfo, pointData } = this.props
     try {
-      this.instance = this.renderChart(this.dom, mapData, parentInfo, this.instance)
+      this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
       resizeListener(this.dom, () => {
-        this.instance = this.renderChart(this.dom, mapData, parentInfo, this.instance, true)
+        this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance, true)
       })
     } catch (e) {
       console.log(e); // eslint-disable-line
@@ -47,72 +49,33 @@ export default class GraphChart extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     const {
-      mapData, parentInfo,
+      mapData, parentInfo, pointData, geoJson,
     } = nextProps
-    return !_.isEqual(mapData, this.props.mapData) || !_.isEqual(parentInfo, this.props.parentInfo)
+    this.setState({ newCenter: [] })
+    return !_.isEqual(mapData, this.props.mapData) || !_.isEqual(parentInfo, this.props.parentInfo) || !_.isEqual(pointData, this.props.pointData) || !_.isEqual(geoJson, this.props.geoJson)
   }
 
   componentDidUpdate() {
-    const { mapData, parentInfo } = this.props
-    this.instance = this.renderChart(this.dom, mapData, parentInfo, this.instance)
+    const { mapData, parentInfo, pointData } = this.props
+    this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
   }
 
-  // componentWillUnmount() {
-  //   unbind(this.dom)
-  //   this.instance && this.instance.dispose()  //  eslint-disable-line
-  // }
-
-  hide = (array) => {
-    const result = []
-    array.forEach((e) => {
-      if (e.category === '2') {
-        if (e.show === true) {
-          result.push(e)
-        }
-      } else {
-        result.push(e)
-      }
-    })
-    return result
-  }
-
-  convertData = (list, parentInfo) => {
-    if (this.props.noPoint === true) {
-      return
-    }
+  convertData = (list) => {
     const result = []
     list.forEach((e) => {
-      if (!_.find(result, { where: e['所在省份'] }) && parentInfo.length === 1) {
-        result.push({
-          name: e['景区名称'],
-          value: [Number(e['经度']), Number(e['纬度']), 0],
-          where: e['所在省份'],
-          aoiCode: e['区域码'],
-          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
-        })
-      } else if (parentInfo.length === 2 && e['所在省份'] === parentInfo[1].cityName) {
-        result.push({
-          name: e['景区名称'],
-          value: [Number(e['经度']), Number(e['纬度']), 0],
-          where: e['所在省份'],
-          aoiCode: e['区域码'],
-          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
-        })
-      } else if (parentInfo.length > 2 && e['景区名称'].indexOf(parentInfo[2].cityName) > -1) {
-        result.push({
-          name: e['景区名称'],
-          value: [Number(e['经度']), Number(e['纬度']), 0],
-          where: e['所在省份'],
-          aoiCode: e['区域码'],
-          pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
-        })
-      }
+      result.push({
+        name: e['景区名称'],
+        value: [Number(e['经度']), Number(e['纬度']), 0],
+        where: e['所在省份'],
+        aoiCode: e['区域码'],
+        pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+      })
     })
     return result
   }
 
-  handleLine = (list) => {
-    if (this.props.noPoint === true) {
+  handleLine = (list, pointData) => {
+    if (pointData.length === 0) {
       return
     }
     const result = []
@@ -134,11 +97,16 @@ export default class GraphChart extends React.Component {
     this.setState({ select: name, showInfoSide: true })
   }
 
-  renderChart = (dom, mapData, parentInfo, instance, forceUpdate = false) => {
+  handleCenter = async (value) => {
+    const { mapData, pointData, parentInfo } = this.props
+    await this.setState({ newCenter: [value[0], value[1]] })
+    this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
+  }
+
+  renderChart = (dom, mapData, pointData, parentInfo, instance, forceUpdate = false) => {
     if (!mapData || mapData.length < 1) {
       return
     }
-    console.log(this.props.geoJson)
     echarts.registerMap('Map', this.props.geoJson)
     let options
     const that = this
@@ -152,6 +120,7 @@ export default class GraphChart extends React.Component {
         },
       }
     } else {
+      const { newCenter } = this.state
       options = {
         tooltip: {
           trigger: 'item',
@@ -168,17 +137,15 @@ export default class GraphChart extends React.Component {
                 res += `<div>${e}</div>`
               })
               res += '</div>'
+            } else if (!p.data.where) {
+              const txtCon = `${p.name}`
+              res = txtCon
             } else {
-              if (!p.data.where) {
-                const txtCon = `${p.name}`
-                res = txtCon
-              } else {
-                res += '<div style="text-align:center;width:260px;">'
-                res += `<div><img style='width:250px;height:150px;' src='${p.data.pic}' /></div>`
-                res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;'>${p.name}</div>`
-                res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;font-size:12px;'>${p.name}<br />是国家5A级景区，位于${p.data.where}，<br />下面是对该景区的大段描述balabala</div>`
-                res += '</div>'
-              }
+              res += '<div style="text-align:center;width:260px;">'
+              res += `<div><img style='width:250px;height:150px;' src='${p.data.pic}' /></div>`
+              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;'>${p.name}</div>`
+              res += `<div style='margin-top:4px;word-wrap:break-word;word-break:break-all;font-size:12px;'>${p.name}<br />是国家5A级景区，位于${p.data.where}，<br />下面是对该景区的大段描述balabala</div>`
+              res += '</div>'
             }
             return res
           },
@@ -220,6 +187,7 @@ export default class GraphChart extends React.Component {
         geo: {
           show: true,
           map: 'Map',
+          center: newCenter.length > 0 ? newCenter : null,
           label: {
             normal: {
               show: false,
@@ -263,7 +231,7 @@ export default class GraphChart extends React.Component {
               curveness: 0.1, // 尾迹线条曲直度
             },
           },
-          data: this.props.parentInfo.length < 3 ? [] : this.showAttack ? this.attackList : this.handleLine(this.lineData),
+          data: this.props.parentInfo.length < 3 ? [] : this.showAttack ? this.attackList : this.handleLine(this.lineData, pointData),
         }, {
           name: 'Top 5',
           type: this.props.parentInfo.length > 2 ? 'effectScatter' : 'scatter',
@@ -305,7 +273,7 @@ export default class GraphChart extends React.Component {
               color: '#D8BC37', // 标志颜色
             },
           },
-          data: this.convertData(placeData, parentInfo),
+          data: this.convertData(pointData),
           // showEffectOn: 'render',
           // rippleEffect: {
           //   brushType: 'stroke',
@@ -429,7 +397,10 @@ export default class GraphChart extends React.Component {
       if (parentInfo[parentInfo.length - 1].code === params.data.cityCode) {
         return
       }
-      if (params.data.where) {
+      if (params.data.aoiCode === 'goback') {
+        this.handleCenter(params.data.value)
+        return
+      } else if (params.data.where) {
         console.log('景区！')
         const city = params.data.name.split('市')
         const lowCity = city[city.length - 1].split('县')
@@ -464,6 +435,8 @@ export default class GraphChart extends React.Component {
             width: 300,
             right: 0,
             height: '100%',
+            zIndex: 100,
+            display: showInfoSide ? 'block' : 'none',
           }}
         >
           <p style={{ marginTop: 60 }}>{select}</p>

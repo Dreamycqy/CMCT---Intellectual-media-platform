@@ -9,7 +9,7 @@ router.all('/', (req, res) => {
   const { hostname } = req
   const { method } = req
   let url = req.baseUrl
-  const { basePath, newPath, newsPath, amapDetail } = config
+  const { basePath, newPath, newsPath, amapDetail, jimu } = config
   if (url.indexOf('api') > -1) {
     url = url.split('/api')[1] // eslint-disable-line
   }
@@ -19,6 +19,8 @@ router.all('/', (req, res) => {
     url = newsPath + url.split('/typeXinwen')[1]
   } else if (url.indexOf('amapDetail') > -1) {
     url = amapDetail + url.split('/amapDetail')[1]
+  } else if (url.indexOf('jimu') > -1) {
+    url = jimu + url.split('/jimu')[1]
   } else {
     url = (typeof basePath === 'string' ? basePath : basePath[hostname]) + url
   }

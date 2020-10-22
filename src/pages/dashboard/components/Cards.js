@@ -1,7 +1,6 @@
 import React from 'react'
 import RoseChart from './RoseChart'
 import RankingBoard from './RankingBoard'
-import Pie from './Pie'
 import D3SimpleTagCloudChart from './D3SimpleTagCloudChart'
 import Styles from './Cards.less'
 
@@ -19,15 +18,7 @@ export default class Cards extends React.Component {
     }, {
       title: '热门词云',
       sign: '中华文化',
-      content: <D3SimpleTagCloudChart />,
-    }, {
-      title: '用户画像',
-      sign: '年轻',
-      content: '',
-    }, {
-      title: '用户满意度',
-      sign: '70%',
-      content: <Pie />,
+      content: <div style={{ height: 255 }}><D3SimpleTagCloudChart /></div>,
     }]
   }
 

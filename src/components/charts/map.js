@@ -51,7 +51,7 @@ export default class GraphChart extends React.Component {
     const {
       mapData, parentInfo, pointData, geoJson,
     } = nextProps
-    this.setState({ newCenter: [] })
+    // this.setState({ newCenter: [] })
     return !_.isEqual(mapData, this.props.mapData) || !_.isEqual(parentInfo, this.props.parentInfo) || !_.isEqual(pointData, this.props.pointData) || !_.isEqual(geoJson, this.props.geoJson)
   }
 

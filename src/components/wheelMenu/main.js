@@ -8,11 +8,12 @@ import {
   faVideo,
   faInfoCircle,
   faProjectDiagram,
+  faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import InfoCard from './cards/infoCard'
 import VideoCard from './cards/videoCard'
 import PicCard from './cards/picCard'
-import * as styles from './style.js'
+import * as styles from './style.js.js'
 
 const theme = {
   pieMenu: {
@@ -92,6 +93,8 @@ export default class extends React.Component {
     this.setState({ type })
     if (type === 'interest') {
       this.props.toggle(true)
+    } else if (type === 'close') {
+      this.props.close()
     } else {
       this.props.toggle(false)
     }
@@ -127,6 +130,9 @@ export default class extends React.Component {
         <PieMenu centerRadius="200px" radius="250px" Center={Center}>
           {choice === 0 && (
             <>
+              <Slice onSelect={() => this.selectOption('close')} attrs={{ filled: 'true', active: `${type === 'close'}` }}>
+                <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+              </Slice>
               <Slice onSelect={() => this.selectOption('info')} attrs={{ filled: 'true', active: `${type === 'info'}` }}>
                 <FontAwesomeIcon icon={faInfoCircle} size="2x" />
               </Slice>

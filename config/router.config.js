@@ -35,10 +35,6 @@ export default [
         path: 'dashboard',
         component: './dashboard',
       },
-      {
-        path: 'test',
-        component: './wheelMenu',
-      },
     ],
   },
 ]

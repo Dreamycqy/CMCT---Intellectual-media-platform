@@ -44,6 +44,7 @@ export default class WheelMenu extends React.Component {
       menuItems: [],
       showMenuItems: [],
       menuOpen: true,
+      show: true,
     }
   }
 
@@ -60,6 +61,10 @@ export default class WheelMenu extends React.Component {
     await this.setState({ showMenuItems: [] })
     this.animateButtons()
     this.setState({ menuOpen })
+  }
+
+  close = () => {
+    this.setState({ menuOpen: false, menuItems: [], showMenuItems: [], show: false })
   }
 
   menu = (size, items, open) => (
@@ -84,7 +89,7 @@ export default class WheelMenu extends React.Component {
         <div
           className={Styles.menuItem}
           style={styling}
-          onClick={() => this.clickItem(items)}
+          onClick={() => this.itemClick(item.name)}
         >
           <span>
             <FontAwesomeIcon icon={item.icon} size="2x" color="white" />
@@ -102,7 +107,7 @@ export default class WheelMenu extends React.Component {
           width: 500,
           borderRadius: '50%',
           margin: '1.75em auto 0',
-          zIndex: 1000,
+          zIndex: 20,
           top: '50%',
           marginTop: '8em',
         }}
@@ -156,12 +161,12 @@ export default class WheelMenu extends React.Component {
   }
 
   render() {
-    const { showMenuItems, menuOpen } = this.state
+    const { showMenuItems, menuOpen, show } = this.state
     return (
-      <div>
+      <div style={{ display: show ? 'block' : 'none' }}>
         <div style={{ position: 'absolute', width: '100%' }}>
           <div className={Styles.menuToggle}>
-            <Main toggle={this.toggle} />
+            <Main toggle={this.toggle} close={this.close} />
           </div>
         </div>
         {this.menu(46, showMenuItems, menuOpen)}

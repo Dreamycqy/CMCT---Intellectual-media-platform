@@ -248,7 +248,7 @@ class MapPage extends React.Component {
     return (
       <div>
         <Spin spinning={loading} size="large">
-          <div style={{ height: this.props.type === 'small' ? 380 : 800, background: `url(${backGroundImg}) top` }}>
+          <div style={{ height: this.props.type === 'small' ? 380 : 1000, background: `url(${backGroundImg}) top` }}>
             <div style={{ zIndex: 100, position: 'fixed', top: 40, backgroundColor: '#ffffff59', height: 40, padding: '0 20px', lineHeight: '40px' }}>
               {this.renderBread(parentInfo)}
             </div>

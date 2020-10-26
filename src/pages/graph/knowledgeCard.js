@@ -59,25 +59,46 @@ const options = [{
 
 const kgList = [
   {
-    title: '知识点1',
+    title: '爱新觉罗溥仪',
+    src: 'https://pic.baike.soso.com/ugc/baikepic2/9612/cut-20200421180619-1075321186_jpg_265_331_13509.jpg/300',
+    type: '人物',
+    desc: '爱新觉罗·溥仪，字曜之，号浩然，出生于北京醇亲王府，醇贤亲王奕譞之孙、摄政王载沣长子，清朝末代皇帝，中国历史上最后一个皇帝。',
   },
   {
-    title: '知识点2',
+    title: '朱棣',
+    src: 'https://pic.baike.soso.com/ugc/baikepic2/32150/cut-20190526200410-1697936262_jpg_418_522_45595.jpg/300',
+    type: '人物',
+    desc: '朱棣（1360年5月2日-1424年8月12日），出生于应天（今南京），朱元璋第四子，明朝第三位皇帝，被称为“永乐大帝”。',
   },
   {
-    title: '知识点3',
+    title: '慈禧',
+    src: 'https://pic.baike.soso.com/ugc/baikepic2/30443/20190603141620-897148730_jpeg_407_430_36671.jpg/0',
+    type: '人物',
+    desc: '慈禧（本名：叶赫那拉氏，别名：西太后、老佛爷，1835年11月29日-1908年11月15日），出生于北京，咸丰帝妃嫔，同治帝生母，晚清实际统治者。',
   },
   {
-    title: '知识点4',
+    title: '木结构建筑',
+    src: 'https://pic.baike.soso.com/ugc/baikepic2/0/20161021204506-440428090.jpg/800',
+    type: '建筑',
+    desc: '木结构建筑（timber construction）是指单纯由木材或主要由木材承受荷载的结构建筑，通过各种金属连接件或榫卯手段进行连接和固定。',
   },
   {
-    title: '知识点5',
+    title: '',
+    src: '',
+    type: '',
+    desc: '',
   },
   {
     title: '知识点6',
+    src: '',
+    type: '',
+    desc: '',
   },
   {
     title: '知识点7',
+    src: '',
+    type: '',
+    desc: '',
   },
 ]
 
@@ -95,12 +116,12 @@ class FirstGraph extends React.Component {
       filter: ['publishTime', 'desc'],
       searchKey: '',
       imgList: [
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
-        { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
+        { object: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2278166867,3581766351&fm=26&gp=0.jpg' },
+        { object: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2635761105,765707989&fm=26&gp=0.jpg' },
+        { object: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3301832637,470639581&fm=26&gp=0.jpg' },
+        { object: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2456562730,1535398683&fm=26&gp=0.jpg' },
+        { object: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2893246761,1977766465&fm=26&gp=0.jpg' },
+        { object: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2651851767,3764004854&fm=26&gp=0.jpg' },
       ],
       selectImg: {
         src: '',
@@ -215,7 +236,7 @@ class FirstGraph extends React.Component {
             extra={(
               <div>
                 <Button type="primary" onClick={() => this.setState({ showExplore: !showExplore })}>
-                  {showExplore === false ? '展开探索' : '隐藏探索'}
+                  {showExplore === false ? '展开图谱探索' : '隐藏图谱探索'}
                 </Button>
                 <Popover
                   content={(
@@ -282,7 +303,7 @@ class FirstGraph extends React.Component {
                 <Slider
                   style={{ height: 180, backgroundColor: 'aliceblue' }}
                   dots slidesPerRow={4}
-                  autoplay autoplaySpeed={3000}
+                  // autoplay autoplaySpeed={3000}
                 >
                   {this.renderImg(imgList)}
                 </Slider>
@@ -321,16 +342,16 @@ class FirstGraph extends React.Component {
                   size: 'small',
                   style: { display: typeof resource === 'object' && resource.length > 0 ? 'block' : 'none' },
                 }}
-                style={{ height: 300, overflowY: 'scroll', padding: '0 20px 20px 20px' }}
+                style={{ height: 500, overflowY: 'scroll', padding: '0 20px 20px 20px' }}
                 renderItem={(item) => {
                   return (
                     <List.Item>
                       <List.Item.Meta
-                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" size="large" />}
+                        avatar={<Avatar src={item.src} size="large" />}
                         title={<a href="https://ant.design">{item.title}</a>}
-                        description="分类：某某类型"
+                        description={`分类：${item.type}`}
                       />
-                      <p style={{ fontSize: 12, wordBreak: 'break-all' }}>这是对这个知识点的一段简介，balabalabalabalabalabalabalabala</p>
+                      <p style={{ fontSize: 12, wordBreak: 'break-all' }}>{item.desc}</p>
                     </List.Item>
                   )
                 }}
@@ -361,7 +382,7 @@ class FirstGraph extends React.Component {
                   size: 'small',
                   style: { display: typeof resource === 'object' && resource.length > 0 ? 'block' : 'none' },
                 }}
-                style={{ height: 600, overflowY: 'scroll', padding: '0 20px 20px 20px' }}
+                style={{ height: 670, overflowY: 'scroll', padding: '0 20px 20px 20px' }}
                 renderItem={(item) => {
                   return (
                     <List.Item>

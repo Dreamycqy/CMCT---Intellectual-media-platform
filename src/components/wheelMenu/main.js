@@ -13,7 +13,7 @@ import {
 import InfoCard from './cards/infoCard'
 import VideoCard from './cards/videoCard'
 import PicCard from './cards/picCard'
-import * as styles from './style.js.js'
+import * as styles from './style'
 
 const theme = {
   pieMenu: {
@@ -30,7 +30,7 @@ export default class extends React.Component {
     super(props)
     this.state = {
       choice: 0,
-      type: 'info',
+      type: 'interest',
       imgList: [
         { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
         { object: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png' },
@@ -45,7 +45,16 @@ export default class extends React.Component {
   }
 
   componentWillMount = () => {
-    this.getVideos('清华大学')
+    this.getVideos(this.props.select === '餐饮场所' ? '餐饮场所' : '清华大学')
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.show === true && this.props.show === false) {
+      this.setState({ type: 'info' })
+    }
+    if (nextProps.select !== this.props.select) {
+      this.getVideos(nextProps.select === '餐饮场所' ? '餐饮场所' : '清华大学')
+    }
   }
 
   getVideos = async (name) => {
@@ -104,13 +113,13 @@ export default class extends React.Component {
     const { imgList, videoList, loadingVideo } = this.state
     switch (type) {
       case 'info':
-        return <InfoCard />
+        return <InfoCard name={this.props.select} />
       case 'pic':
-        return <PicCard imgList={imgList} />
+        return <PicCard imgList={imgList} name={this.props.select} />
       case 'video':
-        return <VideoCard videoList={videoList} loadingVideo={loadingVideo} />
+        return <VideoCard videoList={videoList} loadingVideo={loadingVideo} name={this.props.select} />
       case 'interest':
-        return <InfoCard />
+        return <InfoCard name={this.props.select} />
       default:
         return null
     }
@@ -127,7 +136,7 @@ export default class extends React.Component {
     )
     return (
       <ThemeProvider theme={theme}>
-        <PieMenu centerRadius="200px" radius="250px" Center={Center}>
+        <PieMenu centerRadius="200px" radius="240px" Center={Center}>
           {choice === 0 && (
             <>
               <Slice onSelect={() => this.selectOption('close')} attrs={{ filled: 'true', active: `${type === 'close'}` }}>

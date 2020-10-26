@@ -1,8 +1,8 @@
 import { css } from 'styled-components'
 
 export const container = css`
-  width: 500px;
-  height: 500px;
+  width: 480px;
+  height: 480px;
 `
 
 export const center = css`

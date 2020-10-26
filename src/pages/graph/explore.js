@@ -1,5 +1,6 @@
 import React from 'react'
 import { Icon, Avatar, Dropdown, Menu } from 'antd'
+import TextChart from '@/components/charts/testChart'
 
 const { SubMenu } = Menu
 
@@ -176,7 +177,7 @@ class GraphList extends React.Component {
         result.push(
           <Dropdown placement="bottomLeft" overlay={menu}>
             <div
-              style={{ marginBottom: 6, textAlign: 'center', cursor: 'pointer' }}
+              style={{ marginBottom: 6, textAlign: 'center', cursor: 'pointer', backgroundColor: e.name === '历史' ? '#c4e3ff' : null, padding: '6px 0' }}
               onClick={() => this.forceClick(e.name)}
               key={e.name + index}
             >
@@ -188,7 +189,7 @@ class GraphList extends React.Component {
       } else {
         result.push(
           <div
-            style={{ marginBottom: 6, textAlign: 'center', cursor: 'pointer' }}
+            style={{ marginBottom: 6, textAlign: 'center', cursor: 'pointer', padding: '6px 0' }}
             onClick={() => this.forceClick(e.name)}
             key={e.name + index}
           >
@@ -215,9 +216,12 @@ class GraphList extends React.Component {
             {this.renderHistory(hisList)}
           </div>
         </div>
+        <div style={{ height: '100%', width: 600, float: 'left' }}>
+          <TextChart />
+        </div>
         <div style={{ width: 80, position: 'absolute', zIndex: 100, borderLeft: '1px solid #e8e8e8', right: '20px', backgroundColor: '#ffffff69' }}>
           <h4 style={{ textAlign: 'center', padding: 10, backgroundColor: '#1e95c3', color: '#fff' }}>当前选择</h4>
-          <div style={{ overflow: 'scroll', maxHeight: 400, padding: 10 }}>
+          <div style={{ overflow: 'scroll', maxHeight: 400, padding: '10px 0' }}>
             {this.renderDims(dimList)}
           </div>
         </div>

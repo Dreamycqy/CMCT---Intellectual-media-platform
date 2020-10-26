@@ -1,53 +1,23 @@
 import React from 'react'
-import { Spin, Cascader } from 'antd'
+import { Spin } from 'antd'
 import AMapJS from 'amap-js'
 import _ from 'lodash'
+import * as turf from '@turf/turf'
 import MapChart from '@/components/charts/map'
-import backGroundImg from '@/assets/bg1.jpg'
+import backGroundImg from '@/assets/bg2.jpg'
 import { getPlaceborder } from '@/services/edukg'
 import placeData from '@/constants/5aPlace'
 import tsinghuaData from '@/constants/tsinghuaData'
+import TheMenu from '@/components/wheelMenu'
 
 const key = '1ee802ced4061b529b02d9b9d2b9f704'
-const options = [
-  {
-    value: '类型1',
-    label: '类型1',
-    children: [
-      {
-        value: '类型1-1',
-        label: '类型1-1',
-        children: [
-          {
-            value: '类型1-1-1',
-            label: '类型1-1-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: '类型2',
-    label: '类型2',
-    children: [
-      {
-        value: '类型2-1',
-        label: '类型2-1',
-        children: [
-          {
-            value: '类型2-1-1',
-            label: '类型2-1-1',
-          },
-        ],
-      },
-    ],
-  },
-]
 
 class MapPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      select: '某地点',
+      show: false,
       pointData: false,
       loading: false,
       mapData: [],
@@ -58,6 +28,7 @@ class MapPage extends React.Component {
       geoJson: {
         features: [],
       },
+      centerPoint: [],
     }
     this.geoJson = {
       features: [],
@@ -75,6 +46,7 @@ class MapPage extends React.Component {
   }
 
   getGeoData = async (adcode) => {
+    this.setState({ loading: true, centerPoint: [] })
     if (adcode === this.lastDirect.code) {
       this.getMapData(this.lastDirect.geoJson)
       return
@@ -207,6 +179,21 @@ class MapPage extends React.Component {
     return result
   }
 
+  findCenter = () => {
+    const result = []
+    let first = []
+    this.state.pointData.forEach((e, index) => {
+      if (index === 0) {
+        first = [Number(e['经度']), Number(e['纬度'])]
+      }
+      result.push([Number(e['经度']), Number(e['纬度'])])
+    })
+    result.push(first)
+    const polygon = turf.polygon([result])
+    const center = turf.centerOfMass(polygon)
+    this.setState({ centerPoint: center.geometry.coordinates })
+  }
+
   parentInfoPush = (params, isPlace) => {
     const { parentInfo } = this.state
     parentInfo.push(params)
@@ -221,7 +208,7 @@ class MapPage extends React.Component {
     list.forEach((e, index) => {
       result.push(
         <div style={{ float: 'left', marginRight: 10 }}>
-          <a style={{ color: 'white' }} href="javascript:;" onClick={() => this.chooseArea(e.code, index)}>
+          <a style={{ color: '#000000a6' }} href="javascript:;" onClick={() => this.chooseArea(e.code, index)}>
             {e.cityName}
           </a>
         </div>,
@@ -243,22 +230,36 @@ class MapPage extends React.Component {
     this.getGeoData(code)
   }
 
+  showModal = () => {
+    this.setState({ show: true })
+  }
+
+  closeModal = () => {
+    this.setState({ show: false })
+  }
+
+  selectInfo = (name) => {
+    this.setState({ select: name })
+  }
+
   render() {
-    const { mapData, parentInfo, geoJson, loading, pointData } = this.state
+    const { mapData, parentInfo, geoJson, loading, pointData, show, select, centerPoint } = this.state
     return (
       <div>
         <Spin spinning={loading} size="large">
           <div style={{ height: this.props.type === 'small' ? 380 : 1000, background: `url(${backGroundImg}) top` }}>
-            <div style={{ zIndex: 100, position: 'fixed', top: 40, backgroundColor: '#ffffff59', height: 40, padding: '0 20px', lineHeight: '40px' }}>
+            <div style={{ zIndex: 25, position: 'fixed', top: 40, backgroundColor: '#00000029', height: 40, padding: '0 20px', lineHeight: '40px' }}>
               {this.renderBread(parentInfo)}
             </div>
-            <div style={{ zIndex: 100, position: 'fixed', top: 50, right: 80, height: 40, padding: '0 20px', lineHeight: '40px' }}>
-              <Cascader options={options} placeholder="Please select" />
+            <div style={{ zIndex: show ? 12 : 0, position: 'fixed', top: 40, height: '100%', width: '50%' }}>
+              <TheMenu show={show} closeModal={this.closeModal} select={select} findCenter={this.findCenter} />
             </div>
             <MapChart
               mapData={mapData} parentInfo={parentInfo}
               parentInfoPush={this.parentInfoPush} geoJson={geoJson}
               getPlace={this.getPlace} pointData={pointData}
+              mapType="large" showModal={this.showModal}
+              selectInfo={this.selectInfo} centerPoint={centerPoint}
             />
           </div>
         </Spin>

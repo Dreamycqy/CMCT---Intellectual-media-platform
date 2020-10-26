@@ -29,35 +29,38 @@ export default class GraphChart extends React.Component {
     // }]
     this.attackList = []
     this.state = {
-      showInfoSide: false,
-      select: '',
       newCenter: [],
     }
   }
 
   componentDidMount() {
-    const { mapData, parentInfo, pointData } = this.props
+    const { mapData, parentInfo, pointData, centerPoint } = this.props
     try {
-      this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
+      this.instance = this.renderChart(this.dom, mapData, pointData, centerPoint, parentInfo, this.instance)
       resizeListener(this.dom, () => {
-        this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance, true)
+        this.instance = this.renderChart(this.dom, mapData, pointData, centerPoint, parentInfo, this.instance, true)
       })
     } catch (e) {
       console.log(e); // eslint-disable-line
     }
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (!_.isEqual(nextProps.mapData, this.props.mapData)) {
+      this.setState({ newCenter: [] })
+    }
+  }
+
   shouldComponentUpdate(nextProps) {
     const {
-      mapData, parentInfo, pointData, geoJson,
+      mapData, parentInfo, pointData, geoJson, centerPoint,
     } = nextProps
-    // this.setState({ newCenter: [] })
-    return !_.isEqual(mapData, this.props.mapData) || !_.isEqual(parentInfo, this.props.parentInfo) || !_.isEqual(pointData, this.props.pointData) || !_.isEqual(geoJson, this.props.geoJson)
+    return !_.isEqual(mapData, this.props.mapData) || !_.isEqual(parentInfo, this.props.parentInfo) || !_.isEqual(pointData, this.props.pointData) || !_.isEqual(geoJson, this.props.geoJson) || !_.isEqual(centerPoint, this.props.centerPoint)
   }
 
   componentDidUpdate() {
-    const { mapData, parentInfo, pointData } = this.props
-    this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
+    const { mapData, parentInfo, pointData, centerPoint } = this.props
+    this.instance = this.renderChart(this.dom, mapData, pointData, centerPoint, parentInfo, this.instance)
   }
 
   convertData = (list) => {
@@ -74,6 +77,10 @@ export default class GraphChart extends React.Component {
     return result
   }
 
+  showInfo = (name) => {
+    this.props.selectInfo(name)
+  }
+
   handleLine = (list, pointData) => {
     if (pointData.length === 0) {
       return
@@ -81,7 +88,6 @@ export default class GraphChart extends React.Component {
     const result = []
     list.forEach((item) => {
       const ori = _.find(placeData, { 景区名称: item.name })
-      console.log(ori)
       item.target.forEach((e) => {
         const target = _.find(placeData, { 景区名称: e.name })
         result.push([
@@ -93,17 +99,24 @@ export default class GraphChart extends React.Component {
     return result
   }
 
-  showInfo = (name) => {
-    this.setState({ select: name, showInfoSide: true })
+  handleAttack = (center, list) => {
+    const result = []
+    list.forEach((e) => {
+      result.push([
+        { coord: [e['经度'], e['纬度']], list: ['餐饮场所'] },
+        { coord: center },
+      ])
+    })
+    return result
   }
 
   handleCenter = async (value) => {
-    const { mapData, pointData, parentInfo } = this.props
+    const { mapData, pointData, parentInfo, centerPoint } = this.props
     await this.setState({ newCenter: [value[0], value[1]] })
-    this.instance = this.renderChart(this.dom, mapData, pointData, parentInfo, this.instance)
+    this.instance = this.renderChart(this.dom, mapData, pointData, centerPoint, parentInfo, this.instance)
   }
 
-  renderChart = (dom, mapData, pointData, parentInfo, instance, forceUpdate = false) => {
+  renderChart = (dom, mapData, pointData, centerPoint, parentInfo, instance, forceUpdate = false) => {
     if (!mapData || mapData.length < 1) {
       return
     }
@@ -157,7 +170,7 @@ export default class GraphChart extends React.Component {
           text: `${parentInfo[parentInfo.length - 1].cityName
           }`,
           textStyle: {
-            color: 'rgb(179, 239, 255)',
+            color: this.props.mapType === 'large' ? 'black' : 'rgb(179, 239, 255)',
             fontSize: 16,
           },
         },
@@ -199,27 +212,21 @@ export default class GraphChart extends React.Component {
           roam: true,
           itemStyle: {
             normal: {
-              areaColor: '#24CFF4',
-              borderColor: '#53D9FF',
-              borderWidth: 1.3,
-              shadowBlur: 15,
-              shadowColor: 'rgb(58,115,192)',
-              shadowOffsetX: 7,
-              shadowOffsetY: 6,
-            },
-            emphasis: {
-              areaColor: '#8dd7fc',
-              borderWidth: 1.6,
-              shadowBlur: 25,
+              areaColor: '#d1eaff',
+              borderColor: 'rgba(0,63,140,0.2)',
+              shadowColor: 'rgba(0,63,140,0.2)',
+              shadowOffsetY: 20,
+              shadowBlur: 30,
             },
           },
         },
         series: [{
           type: 'lines',
-          zlevel: 2,
+          zlevel: 1,
           effect: {
-            show: this.showAttack,
-            period: 4, // 箭头指向速度，值越小速度越快
+            show: true,
+            color: '#fff', // 流动点颜色
+            period: 8, // 箭头指向速度，值越小速度越快
             trailLength: 0.02, // 特效尾迹长度[0,1]值越大，尾迹越长重
             symbol: 'arrow', // 箭头图标
             symbolSize: 15, // 图标大小
@@ -231,7 +238,7 @@ export default class GraphChart extends React.Component {
               curveness: 0.1, // 尾迹线条曲直度
             },
           },
-          data: this.props.parentInfo.length < 3 ? [] : this.showAttack ? this.attackList : this.handleLine(this.lineData, pointData),
+          data: this.handleAttack(centerPoint, pointData),
         }, {
           name: 'Top 5',
           type: this.props.parentInfo.length > 2 ? 'effectScatter' : 'scatter',
@@ -240,15 +247,16 @@ export default class GraphChart extends React.Component {
           symbolSize: this.props.parentInfo.length > 2 ? [24, 24] : [30, 30],
           roam: true, // 是否可缩放
           rippleEffect: {
-            period: 4,
+            period: 2,
             brushType: 'stroke',
-            scale: 8,
+            scale: 3,
           },
           label: {
             normal: this.props.parentInfo.length > 2 ? {
+              position: 'bottom',
               show: true,
               textStyle: {
-                color: '#fff',
+                color: '#000',
                 fontSize: 9,
               },
               formatter(value) {
@@ -256,8 +264,9 @@ export default class GraphChart extends React.Component {
               },
             } : {
               show: true,
+              position: 'bottom',
               textStyle: {
-                color: '#fff',
+                color: '#000',
                 fontSize: 9,
               },
               formatter(value) {
@@ -270,7 +279,7 @@ export default class GraphChart extends React.Component {
           },
           itemStyle: {
             normal: {
-              color: '#D8BC37', // 标志颜色
+              color: '#c57aff', // 标志颜色
             },
           },
           data: this.convertData(pointData),
@@ -286,9 +295,9 @@ export default class GraphChart extends React.Component {
           coordinateSystem: 'geo',
           zlevel: 2,
           rippleEffect: {
-            period: 4,
+            period: 3,
             brushType: 'stroke',
-            scale: 8,
+            scale: 4,
           },
           label: {
             normal: {
@@ -309,10 +318,15 @@ export default class GraphChart extends React.Component {
           itemStyle: {
             normal: {
               show: false,
-              color: '#0f0',
+              color: 'red',
             },
           },
-          data: [this.attackedData],
+          data: [{
+            name: '餐饮场所',
+            value: [centerPoint[0], centerPoint[1], 0],
+            interest: '餐饮场所',
+            pic: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
+          }],
         }, {
           name: '地图',
           type: 'map',
@@ -359,19 +373,19 @@ export default class GraphChart extends React.Component {
             },
           },
           itemStyle: {
-            normal: {
-              areaColor: '#24CFF4',
-              borderColor: '#53D9FF',
-              borderWidth: 1.3,
-              shadowBlur: 15,
-              shadowColor: 'rgb(58,115,192)',
-              shadowOffsetX: 7,
-              shadowOffsetY: 6,
-            },
-            emphasis: {
-              areaColor: '#8dd7fc',
-              borderWidth: 1.6,
-              shadowBlur: 25,
+            itemStyle: {
+              normal: {
+                areaColor: '#d1eaff',
+                borderColor: '#000',
+                shadowColor: 'rgb(58,115,192)',
+                shadowOffsetX: 7,
+                shadowOffsetY: 6,
+                shadowBlur: 15,
+                borderWidth: 1,
+              },
+              emphasis: {
+                areaColor: '#FFAE00',
+              },
             },
           },
         }],
@@ -397,15 +411,24 @@ export default class GraphChart extends React.Component {
       if (parentInfo[parentInfo.length - 1].code === params.data.cityCode) {
         return
       }
+      if (params.data.interest) {
+        this.props.showModal(params.data.name)
+        this.showInfo(params.data.name)
+        return
+      }
       if (params.data.aoiCode === 'goback') {
+        const city = params.data.name.split('市')
+        const lowCity = city[city.length - 1].split('县')
+        const district = lowCity[lowCity.length - 1].split('区')
         this.handleCenter(params.data.value)
+        this.props.showModal(params.data.name)
+        this.showInfo(district[district.length - 1])
         return
       } else if (params.data.where) {
         console.log('景区！')
         const city = params.data.name.split('市')
         const lowCity = city[city.length - 1].split('县')
         const district = lowCity[lowCity.length - 1].split('区')
-        this.showInfo(district[district.length - 1])
         this.props.getPlace(params.data.aoiCode, district[district.length - 1])
         const { data } = params
         that.props.parentInfoPush({
@@ -425,22 +448,8 @@ export default class GraphChart extends React.Component {
   }
 
   render() {
-    const { showInfoSide, select } = this.state
     return (
-      <div style={{ height: '100%' }}>
-        <div
-          style={{
-            position: 'fixed',
-            backgroundColor: '#ffffffa6',
-            width: 300,
-            right: 0,
-            height: '100%',
-            zIndex: 100,
-            display: showInfoSide ? 'block' : 'none',
-          }}
-        >
-          <p style={{ marginTop: 60 }}>{select}</p>
-        </div>
+      <div style={{ height: '100%', zIndex: 12 }}>
         <div className="e-charts-graph" ref={t => this.dom = t} style={{ height: '100%' }} />
       </div>
     )

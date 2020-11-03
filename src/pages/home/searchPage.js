@@ -1,18 +1,15 @@
 import React from 'react'
 import { Button, AutoComplete, Input, List, Empty, Divider, Avatar } from 'antd'
+import _ from 'lodash'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { newSearch } from '@/services/edukg'
+import { search } from '@/services/index'
 import { getUrlParams } from '@/utils/common'
 import kgIcon from '@/assets/kgIcon.png'
 import GrapeImg from '@/assets/grape.png'
 import color from '@/constants/colorList'
-import targetData from '@/constants/dataList'
 import place from '@/assets/place.png'
-// import phyImg from '@/assets/eduIcon/phy.png'
-// import chemImg from '@/assets/eduIcon/chem.png'
-// import bioImg from '@/assets/eduIcon/bio.png'
-// import geoImg from '@/assets/eduIcon/geo.png'
+import district from '@/constants/districtCode'
 
 let localCounter = 0
 
@@ -41,12 +38,13 @@ class ClusterBroker extends React.Component {
 
   search = async (filter) => {
     this.setState({ loading: true, filter, firstIn: false })
-    const data = await newSearch({
+    const data = await search({
       searchKey: filter,
+      type: 'keyword',
     })
     if (data.data) {
       this.setState({
-        dataSource: targetData,
+        dataSource: data.data,
       })
     }
     this.setState({ loading: false })
@@ -83,6 +81,7 @@ class ClusterBroker extends React.Component {
       const index = Number(`${Math.random()}`.charAt(3))
       result.push(
         <span
+          key={localCounter++}
           style={{
             color: 'white',
             padding: '2px 20px',
@@ -95,11 +94,41 @@ class ClusterBroker extends React.Component {
             marginRight: 12,
           }}
         >
-          {e}
+          {e.object.split('http://travel.org/')[1]}
         </span>,
       )
     })
+    if (result.length === 0) {
+      result.push(
+        <span
+          key={localCounter++}
+          style={{
+            color: '#000000a6',
+            padding: '2px 20px',
+            display: 'inline-block',
+            textAlign: 'center',
+            border: '1px solid',
+            backgroundColor: '#e8e8e8',
+            borderColor: '#e8e8e8',
+            borderRadius: 4,
+            marginRight: 12,
+          }}
+        >
+          暂无分类
+        </span>,
+      )
+    }
     return result
+  }
+
+  handleFindMap = (area) => {
+    const target = _.find(district, { REGIONNAME: area })
+    if (target) {
+      window.open(`/cmct/mapPage?arcode=${target.REGIONCODE}`)
+      // if (target.PCODE === '110000') {
+      //   window.open(`/mapPage?arcode=${target.REGIONCODE}`)
+      // }
+    }
   }
 
   render() {
@@ -183,14 +212,44 @@ class ClusterBroker extends React.Component {
               showQuickJumper: true,
             }}
             renderItem={(item) => {
+              let picsrc = '' // 首图
+              let name = '' // 名称
+              const geo = [0, 0] // 经纬
+              let address = '' // 地址
+              let desc = '' // 简介
+              let area = '' // 所在区
+              item.property.forEach((e) => {
+                if (e.predicate_label === '图片链接') {
+                  picsrc = e.object
+                }
+                if (e.predicate_label === '中文名') {
+                  name = e.object
+                }
+                if (e.predicate_label === '经度') {
+                  geo[0] = Number(e.object)
+                }
+                if (e.predicate_label === '纬度') {
+                  geo[1] = Number(e.object)
+                }
+                if (e.predicate_label === '地址') {
+                  address = e.object
+                }
+                if (e.predicate_label === '简介') {
+                  desc = e.object
+                }
+                if (e.predicate_label === '所在区') {
+                  area = e.object
+                }
+              })
               return (
                 <List.Item
+                  key={item.uri}
                   style={{ padding: 20 }}
                   extra={(
                     <img
                       width={272}
                       alt="logo"
-                      src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                      src={picsrc}
                     />
                   )}
                 >
@@ -205,24 +264,24 @@ class ClusterBroker extends React.Component {
                       <a
                         href="javascript:;"
                         onClick={() => {
-                          window.open(`/cmct/knowledgeCard?name=${item.name}`)
+                          window.open(`/cmct/knowledgeCard?uri=${item.uri}`)
                         }}
                       >
-                        {this.handleHighlight(item.name, filter)}
+                        {this.handleHighlight(name, filter)}
                       </a>
                     )}
                     description={(
                       <span>
-                        {this.renderTags(item.tags)}
+                        {this.renderTags(item.types)}
                       </span>
                     )}
                   />
                   <div style={{ color: '#888' }}>
-                    <p>{`简介: ${item.info}`}</p>
-                    <p>{`经纬: ${item.geo.join(', ')}`}</p>
+                    <p>{`简介: ${desc}`}</p>
+                    <p>{`经纬: ${geo.join(', ')}`}</p>
                     <p>
-                      {`地址: ${item.address}`}
-                      <a href="javascript:;">&nbsp;&nbsp;&gt;&nbsp;在地图上发现</a>
+                      {`地址: ${address}`}
+                      <a href="javascript:;" onClick={() => this.handleFindMap(area)}>&nbsp;&nbsp;&gt;&nbsp;在地图上发现</a>
                     </p>
                   </div>
                 </List.Item>

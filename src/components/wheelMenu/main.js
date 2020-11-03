@@ -136,23 +136,23 @@ export default class extends React.Component {
     )
     return (
       <ThemeProvider theme={theme}>
-        <PieMenu centerRadius="200px" radius="240px" Center={Center}>
+        <PieMenu centerRadius="220px" radius="250px" Center={Center}>
           {choice === 0 && (
             <>
               <Slice onSelect={() => this.selectOption('close')} attrs={{ filled: 'true', active: `${type === 'close'}` }}>
-                <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+                <FontAwesomeIcon icon={faTimesCircle} size="1.5x" color="#d0a5d4" />
               </Slice>
               <Slice onSelect={() => this.selectOption('info')} attrs={{ filled: 'true', active: `${type === 'info'}` }}>
-                <FontAwesomeIcon icon={faInfoCircle} size="2x" />
+                <FontAwesomeIcon icon={faInfoCircle} size="1.5x" color="#d0a5d4" />
               </Slice>
               <Slice onSelect={() => this.selectOption('pic')} attrs={{ filled: 'true', active: `${type === 'pic'}` }}>
-                <FontAwesomeIcon icon={faImages} size="2x" />
+                <FontAwesomeIcon icon={faImages} size="1.5x" color="#d0a5d4" />
               </Slice>
               <Slice onSelect={() => this.selectOption('video')} attrs={{ filled: 'true', active: `${type === 'video'}` }}>
-                <FontAwesomeIcon icon={faVideo} size="2x" />
+                <FontAwesomeIcon icon={faVideo} size="1.5x" color="#d0a5d4" />
               </Slice>
               <Slice onSelect={() => this.selectOption('interest')} attrs={{ filled: 'true', active: `${type === 'interest'}` }}>
-                <FontAwesomeIcon icon={faProjectDiagram} size="2x" />
+                <FontAwesomeIcon icon={faProjectDiagram} size="1.5x" color="#d0a5d4" />
               </Slice>
             </>
           )}

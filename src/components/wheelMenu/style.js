@@ -1,13 +1,13 @@
 import { css } from 'styled-components'
 
 export const container = css`
-  width: 480px;
-  height: 480px;
+  width: 500px;
+  height: 500px;
 `
 
 export const center = css`
-  width: 400px;
-  height: 400px;
+  width: 440px;
+  height: 440px;
   background-image: linear-gradient(#603c97, #321855);
   > svg {
     position: relative;
@@ -27,5 +27,8 @@ export const slice = css`
   &[active=true] {
     color: black;
     background: radial-gradient(transparent ${({ centerRadius }) => `${centerRadius}, #dc8eec ${centerRadius}`});
+    > svg {
+      color: #321855;
+    }
   }
 `

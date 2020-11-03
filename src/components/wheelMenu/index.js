@@ -181,6 +181,12 @@ export default class WheelMenu extends React.Component {
     if (name === '餐饮场所') {
       this.props.findCenter()
     }
+    if (name === 'back') {
+      await this.setState({ showMenuItems: [], menuOpen: false })
+      await this.makeMenu(menuData)
+      this.animateButtons()
+      this.setState({ menuOpen: true })
+    }
   }
 
   toggle = async (menuOpen) => {
@@ -283,6 +289,7 @@ export default class WheelMenu extends React.Component {
     const stagger = (i) => {
       if (i < length) {
         setTimeout(() => {
+          console.log(items)
           const items = this.state.menuItems
           const showing = this.state.menuItems[i].show
           this.setState({
